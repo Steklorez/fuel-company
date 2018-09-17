@@ -1,11 +1,10 @@
-package com.fuelcompany.application;
+package com.fuelcompany.application.exception;
 
 
 import lombok.Getter;
 
 @Getter
-public class ApplicationException extends Exception{
-
+public class ApplicationException extends RuntimeException {
     private int code;
     private String message;
 

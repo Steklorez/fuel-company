@@ -1,6 +1,6 @@
 package com.fuelcompany.application.controller;
 
-import com.fuelcompany.application.ApplicationException;
+import com.fuelcompany.application.exception.BadRequestException;
 import com.fuelcompany.domain.error.DomainException;
 import com.fuelcompany.domain.services.RegistrationService;
 import com.fuelcompany.infrastructure.api.registration.Record;
@@ -30,15 +30,9 @@ public class RegistrationController {
         } catch (DomainException e) {
             e.printStackTrace();
             return new RegistrationResponse(e.getCode(), e.getMessage());
-        } catch (ApplicationException e) {
+        } catch (BadRequestException e) {
             e.printStackTrace();
             return new RegistrationResponse(e.getCode(), e.getMessage());
         }
     }
-
-/*    @RequestMapping(method = RequestMethod.POST)
-    @ResponseBody
-    public List<Record> registrate(List<Record> records) {
-        return reportRepository.findAll();
-    }*/
 }
