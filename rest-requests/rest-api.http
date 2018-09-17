@@ -1,0 +1,6 @@
+POST http://localhost:8080/reports?date=09-09-2017&fuelType=D&price=3.25&driverId=1
+Accept: */*
+Cache-Control: no-cache
+
+###
+

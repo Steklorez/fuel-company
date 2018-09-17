@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
@@ -18,14 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
 @TestPropertySource(locations = "classpath:application.properties")
-@AutoConfigureRestDocs
 public class ApplicationTests {
 
     @Autowired
@@ -74,7 +72,7 @@ public class ApplicationTests {
         registrateResult = reportController.registrate(record);
         assertError(registrateResult, 1050, "Field 'date' is empty");
 
-        record.setDate(LocalDateTime.now());
+        record.setDate(LocalDate.now());
         registrateResult = reportController.registrate(record);
         assertError(registrateResult, 1051, "Field 'fuelType' is empty");
 
@@ -102,7 +100,7 @@ public class ApplicationTests {
     @Test
     public void addRecord() {
         long driverId = 1L;
-        LocalDateTime now = LocalDateTime.now();
+        LocalDate now = LocalDate.now();
         Record record = new Record();
         BigDecimal price = new BigDecimal("3.27");
         String fuelType = "D";

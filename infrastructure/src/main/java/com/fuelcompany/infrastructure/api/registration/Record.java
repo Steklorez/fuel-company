@@ -5,9 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Setter
 @Getter
@@ -18,5 +19,6 @@ public class Record {
     private String fuelType;
     private BigDecimal price;
     private Long driverId;
-    private LocalDateTime date;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    private LocalDate date;
 }
