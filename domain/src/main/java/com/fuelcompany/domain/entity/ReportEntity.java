@@ -1,0 +1,43 @@
+package com.fuelcompany.domain.entity;
+
+
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "REPORT", schema = "PUBLIC")
+@Getter
+@Setter
+public class ReportEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "FUEL_TYPE", nullable = false, updatable = false)
+    private String fuelType;
+
+    @Column(name = "PRICE", nullable = false, updatable = false)
+    private BigDecimal price;
+
+    @Column(name = "DRIVER_ID", nullable = false, updatable = false)
+    private Long driverId;
+
+    @Column(name = "DATE", nullable = false, updatable = false)
+    private LocalDateTime date;
+
+    @Column(name = "CREATED", nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime created;
+
+    public ReportEntity(String fuelType, BigDecimal price, Long driverId, LocalDateTime date) {
+        this.fuelType = fuelType;
+        this.price = price;
+        this.driverId = driverId;
+        this.date = date;
+    }
+}
