@@ -45,12 +45,4 @@ public class PurchaseEntity {
         this.driverId = driverId;
         this.date = date;
     }
-
-    public static PurchaseEntity buildEntity(PurchaseItem purchase) {
-        return new PurchaseEntity(purchase.getFuelType(),purchase.getPrice(),purchase.getDriverId(),purchase.getDate());
-    }
-
-    public PurchaseItem buildDomainModel() {
-        return new PurchaseItem(this.id,this.fuelType,this.price,this.driverId,this.date);
-    }
 }

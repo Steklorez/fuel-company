@@ -33,12 +33,21 @@ public class Purchase {
             if (!FuelType.fuelTypeSet.contains(purchase.getFuelType()))
                 throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1054);
 
-            return reportRepository.save(PurchaseEntity.buildEntity(purchase)).buildDomainModel();
+            PurchaseEntity entity = reportRepository.save(buildEntity(purchase));
+            return buildDomainModel(entity);
         } catch (DomainException e) {
             throw e;
         } catch (Exception e) {
-            logger.error("Saving process error",e);
+            logger.error("Saving process error", e);
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_E9999);
         }
+    }
+
+    private PurchaseEntity buildEntity(PurchaseItem item) {
+        return new PurchaseEntity(item.getFuelType(), item.getPrice(), item.getDriverId(), item.getDate());
+    }
+
+    private PurchaseItem buildDomainModel(PurchaseEntity entity) {
+        return new PurchaseItem(entity.getId(), entity.getFuelType(), entity.getPrice(), entity.getDriverId(), entity.getDate());
     }
 }
