@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Record {
+public class ApiPurchase {
     private Long id;
     private String fuelType;
     private BigDecimal price;

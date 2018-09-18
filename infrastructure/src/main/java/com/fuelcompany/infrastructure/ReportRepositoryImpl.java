@@ -1,6 +1,6 @@
 package com.fuelcompany.infrastructure;
 
-import com.fuelcompany.domain.entity.ReportEntity;
+import com.fuelcompany.domain.entity.PurchaseEntity;
 import com.fuelcompany.domain.entity.repository.IReportRepository;
 import com.fuelcompany.infrastructure.repository.IReportDefaultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ public class ReportRepositoryImpl implements IReportRepository {
     private IReportDefaultRepository baseRepository;
 
     @Override
-    public ReportEntity save(ReportEntity report) {
+    public PurchaseEntity save(PurchaseEntity report) {
         return baseRepository.save(report);
     }
 }

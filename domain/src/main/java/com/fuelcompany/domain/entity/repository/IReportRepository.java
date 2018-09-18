@@ -1,8 +1,8 @@
 package com.fuelcompany.domain.entity.repository;
 
-import com.fuelcompany.domain.entity.ReportEntity;
+import com.fuelcompany.domain.entity.PurchaseEntity;
 
 public interface IReportRepository {
 
-    ReportEntity save(ReportEntity report);
+    PurchaseEntity save(PurchaseEntity report);
 }

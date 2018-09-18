@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReportEntity {
+public class PurchaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,7 +39,7 @@ public class ReportEntity {
     @CreationTimestamp
     private LocalDateTime created;
 
-    public ReportEntity(String fuelType, BigDecimal price, Long driverId, LocalDate date) {
+    public PurchaseEntity(String fuelType, BigDecimal price, Long driverId, LocalDate date) {
         this.fuelType = fuelType;
         this.price = price;
         this.driverId = driverId;
