@@ -1,4 +1,4 @@
-package com.fuelcompany.domain.entity;
+package com.fuelcompany.domain.aggregateModels.purchase;
 
 
 import lombok.AllArgsConstructor;
@@ -44,5 +44,13 @@ public class PurchaseEntity {
         this.price = price;
         this.driverId = driverId;
         this.date = date;
+    }
+
+    public static PurchaseEntity buildEntity(PurchaseItem purchase) {
+        return new PurchaseEntity(purchase.getFuelType(),purchase.getPrice(),purchase.getDriverId(),purchase.getDate());
+    }
+
+    public PurchaseItem buildDomainModel() {
+        return new PurchaseItem(this.id,this.fuelType,this.price,this.driverId,this.date);
     }
 }

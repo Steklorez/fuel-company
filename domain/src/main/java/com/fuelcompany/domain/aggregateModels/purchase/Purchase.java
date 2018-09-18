@@ -1,8 +1,5 @@
-package com.fuelcompany.domain.services;
+package com.fuelcompany.domain.aggregateModels.purchase;
 
-import com.fuelcompany.domain.entity.FuelType;
-import com.fuelcompany.domain.entity.PurchaseEntity;
-import com.fuelcompany.domain.entity.repository.IReportRepository;
 import com.fuelcompany.domain.error.DomainException;
 import com.fuelcompany.domain.error.ErrorMessages;
 import org.slf4j.Logger;
@@ -17,26 +14,26 @@ import org.springframework.util.StringUtils;
  */
 
 @Service
-public class PurchaseService {
-    private static Logger logger = LoggerFactory.getLogger(PurchaseService.class);
+public class Purchase {
+    private static Logger logger = LoggerFactory.getLogger(Purchase.class);
 
     @Autowired
     private IReportRepository reportRepository;
 
-    public PurchaseEntity save(PurchaseEntity report) throws DomainException {
+    public PurchaseItem save(PurchaseItem purchase) throws DomainException {
         try {
-            if (report.getDate() == null)
+            if (purchase.getDate() == null)
                 throw new DomainException(ErrorMessages.DOMAIN_ERROR_1050);
-            if (StringUtils.isEmpty(report.getFuelType()))
+            if (StringUtils.isEmpty(purchase.getFuelType()))
                 throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1051);
-            if (report.getPrice() == null)
+            if (purchase.getPrice() == null)
                 throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1052);
-            if (report.getDriverId() == null)
+            if (purchase.getDriverId() == null)
                 throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1053);
-            if (!FuelType.fuelTypeSet.contains(report.getFuelType()))
+            if (!FuelType.fuelTypeSet.contains(purchase.getFuelType()))
                 throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1054);
 
-            return reportRepository.save(report);
+            return reportRepository.save(PurchaseEntity.buildEntity(purchase)).buildDomainModel();
         } catch (DomainException e) {
             throw e;
         } catch (Exception e) {

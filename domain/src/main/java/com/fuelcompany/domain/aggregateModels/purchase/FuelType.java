@@ -1,4 +1,4 @@
-package com.fuelcompany.domain.entity;
+package com.fuelcompany.domain.aggregateModels.purchase;
 
 import java.util.Arrays;
 import java.util.Set;

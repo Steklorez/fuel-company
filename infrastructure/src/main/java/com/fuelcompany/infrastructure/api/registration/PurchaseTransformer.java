@@ -1,10 +1,10 @@
 package com.fuelcompany.infrastructure.api.registration;
 
-import com.fuelcompany.domain.entity.PurchaseEntity;
+import com.fuelcompany.domain.aggregateModels.purchase.PurchaseItem;
 
 public class PurchaseTransformer {
-    public static PurchaseEntity toDomain(ApiPurchase apiPurchase) {
-        return new PurchaseEntity(
+    public static PurchaseItem toDomain(ApiPurchase apiPurchase) {
+        return new PurchaseItem(
                 apiPurchase.getFuelType(),
                 apiPurchase.getPrice(),
                 apiPurchase.getDriverId(),
@@ -12,7 +12,7 @@ public class PurchaseTransformer {
         );
     }
 
-    public static ApiPurchase toREST(PurchaseEntity savedPurchase) {
+    public static ApiPurchase toREST(PurchaseItem savedPurchase) {
         if (savedPurchase == null) return null;
         return new ApiPurchase(
                 savedPurchase.getId(),

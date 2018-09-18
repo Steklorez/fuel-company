@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.fuelcompany")
-@EntityScan(basePackages = "com.fuelcompany.domain.entity")
+@EntityScan(basePackages = "com.fuelcompany.domain.aggregateModels.purchase")
 @EnableJpaRepositories(basePackages = {"com.fuelcompany.infrastructure"})
 public class Application {
 

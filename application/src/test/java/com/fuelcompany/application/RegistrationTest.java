@@ -27,27 +27,50 @@ public class RegistrationTest extends SpringTestContainer {
                 .andDo(MockMvcResultHandlers.print());
     }
 
-/*    @Test
-    public void registrationErrors_9999_Test() throws Exception {
-        this.mockMvc.perform(post("/purchases").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
-                .andExpect(jsonPath("error.status").value(500))
-                .andExpect(jsonPath("error.errorCode").value(9999))
-                .andExpect(jsonPath("error.message").value("Internal server error"))
-                .andDo(MockMvcResultHandlers.print());
-    }*/
 
-/*    @Test
+    @Test
     public void registrationErrors_1050_Test() throws Exception {
-        this.mockMvc.perform(post("/registrations").accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(post("/purchases").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
                 .andExpect(jsonPath("error.status").value(422))
                 .andExpect(jsonPath("error.errorCode").value(1050))
                 .andExpect(jsonPath("error.message").value("Field 'date' is empty"))
                 .andDo(MockMvcResultHandlers.print());
-    }*/
+    }
+
+    @Test
+    public void registrationErrors_1051_Test() throws Exception {
+        this.mockMvc.perform(post("/purchases").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
+                .andExpect(jsonPath("error.status").value(422))
+                .andExpect(jsonPath("error.errorCode").value(1050))
+                .andExpect(jsonPath("error.message").value("Field 'date' is empty"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void registrationErrors_1052_Test() throws Exception {
+        this.mockMvc.perform(post("/purchases").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
+                .andExpect(jsonPath("error.status").value(422))
+                .andExpect(jsonPath("error.errorCode").value(1050))
+                .andExpect(jsonPath("error.message").value("Field 'date' is empty"))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void registrationErrors_1053_Test() throws Exception {
+        this.mockMvc.perform(post("/purchases").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
+                .andExpect(jsonPath("error.status").value(422))
+                .andExpect(jsonPath("error.errorCode").value(1050))
+                .andExpect(jsonPath("error.message").value("Field 'date' is empty"))
+                .andDo(MockMvcResultHandlers.print());
+    }
 
 
 
