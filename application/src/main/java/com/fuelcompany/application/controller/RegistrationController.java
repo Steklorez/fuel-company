@@ -9,8 +9,10 @@ import com.fuelcompany.infrastructure.utils.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,12 +45,11 @@ public class RegistrationController {
     }
 
     @Transactional
-    @PostMapping("/file")
+    @PostMapping(path = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    public List<ApiPurchase> save(@RequestParam(value = "file") MultipartFile file) {
+    public void save(@RequestParam(value = "file") MultipartFile file) {
         try {
-            return PurchaseTransformer.toREST(purchase.save(PurchaseTransformer.toDomain(FileUtil.convertToObjectList(file))));
+            purchase.save(PurchaseTransformer.toDomain(FileUtil.convertToObjectList(file)));
         } catch (DomainException e) {
             logger.error("Domain exception", e);
             throw new ApiException(e);

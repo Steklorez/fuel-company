@@ -5,8 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fuelcompany.infrastructure.api.registration.ApiPurchase;
 import org.junit.Test;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
@@ -28,8 +38,7 @@ public class RegistrationTest extends SpringTestContainer {
         )
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
-                .andDo(print())
-                .andExpect(jsonPath("id").value(1))
+                .andExpect(jsonPath("id").isNotEmpty())
                 .andExpect(jsonPath("fuelType").value("D"))
                 .andExpect(jsonPath("price").value(3.25))
                 .andExpect(jsonPath("driverId").value(1))
@@ -49,7 +58,6 @@ public class RegistrationTest extends SpringTestContainer {
         )
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
-                .andDo(print())
                 .andExpect(jsonPath("error.status").value(422))
                 .andExpect(jsonPath("error.errorCode").value(1001))
                 .andExpect(jsonPath("error.message").value("Field 'date' is empty"))
@@ -67,7 +75,6 @@ public class RegistrationTest extends SpringTestContainer {
         )
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
-                .andDo(print())
                 .andExpect(jsonPath("error.status").value(422))
                 .andExpect(jsonPath("error.errorCode").value(1002))
                 .andExpect(jsonPath("error.message").value("Field 'fuelType' is empty"))
@@ -85,7 +92,6 @@ public class RegistrationTest extends SpringTestContainer {
         )
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
-                .andDo(print())
                 .andExpect(jsonPath("error.status").value(422))
                 .andExpect(jsonPath("error.errorCode").value(1003))
                 .andExpect(jsonPath("error.message").value("Field 'price' is empty"))
@@ -103,10 +109,19 @@ public class RegistrationTest extends SpringTestContainer {
         )
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
-                .andDo(print())
                 .andExpect(jsonPath("error.status").value(422))
                 .andExpect(jsonPath("error.errorCode").value(1004))
                 .andExpect(jsonPath("error.message").value("Field 'driverId' is empty"))
                 .andDo(print());
+    }
+
+    @Test
+    public void test() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.multipart("/purchases/file")
+                .file("file", Files.readAllBytes(new File("src/test/resources/multipart.json").toPath()))
+                .param("name", "multipart.json")
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+        )
+                .andExpect(status().isCreated());
     }
 }

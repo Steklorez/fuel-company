@@ -27,8 +27,4 @@ public class PurchaseTransformer {
     public static List<PurchaseItem> toDomain(List<ApiPurchase> apiPurchaseList) {
         return apiPurchaseList.stream().map(PurchaseTransformer::toDomain).collect(Collectors.toList());
     }
-
-    public static List<ApiPurchase> toREST(List<PurchaseItem> purchaseItemList) {
-        return purchaseItemList.stream().map(PurchaseTransformer::toREST).collect(Collectors.toList());
-    }
 }
