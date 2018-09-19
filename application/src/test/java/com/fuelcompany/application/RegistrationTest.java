@@ -1,98 +1,112 @@
 package com.fuelcompany.application;
 
 
-import com.fuelcompany.infrastructure.api.registration.PurchaseResponse;
-import org.junit.Assert;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fuelcompany.infrastructure.api.registration.ApiPurchase;
 import org.junit.Test;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 
 public class RegistrationTest extends SpringTestContainer {
 
     @Test
     public void registrationTest() throws Exception {
-        this.mockMvc.perform(post("/purchases?date=09-09-2017&fuelType=D&price=3.25&driverId=1").accept(MediaType.APPLICATION_JSON))
+        ApiPurchase purchase = new ApiPurchase("D", new BigDecimal("3.25"), 1L, LocalDate.of(2000, 10, 19));
+        String body = (new ObjectMapper()).valueToTree(purchase).toString();
+        this.mockMvc.perform(post("/purchases")
+                .content(body)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(APPLICATION_JSON_UTF8)
+        )
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
-                .andExpect(jsonPath("purchase.id").value(1))
-                .andExpect(jsonPath("purchase.fuelType").value("D"))
-                .andExpect(jsonPath("purchase.price").value(3.25))
-                .andExpect(jsonPath("purchase.driverId").value(1))
-                .andExpect(jsonPath("purchase.date").value("2017-09-09"))
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(print())
+                .andExpect(jsonPath("id").value(1))
+                .andExpect(jsonPath("fuelType").value("D"))
+                .andExpect(jsonPath("price").value(3.25))
+                .andExpect(jsonPath("driverId").value(1))
+                .andExpect(jsonPath("date").value("2000-10-19"))
+                .andDo(print());
     }
 
 
     @Test
-    public void registrationErrors_1050_Test() throws Exception {
-        this.mockMvc.perform(post("/purchases").accept(MediaType.APPLICATION_JSON))
+    public void registrationErrors_1001_Test() throws Exception {
+        ApiPurchase purchase = new ApiPurchase("D", new BigDecimal("3.25"), 1L, null);
+        String body = (new ObjectMapper()).valueToTree(purchase).toString();
+        this.mockMvc.perform(post("/purchases")
+                .content(body)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(APPLICATION_JSON_UTF8)
+        )
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
+                .andDo(print())
                 .andExpect(jsonPath("error.status").value(422))
-                .andExpect(jsonPath("error.errorCode").value(1050))
+                .andExpect(jsonPath("error.errorCode").value(1001))
                 .andExpect(jsonPath("error.message").value("Field 'date' is empty"))
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(print());
     }
 
     @Test
-    public void registrationErrors_1051_Test() throws Exception {
-        this.mockMvc.perform(post("/purchases").accept(MediaType.APPLICATION_JSON))
+    public void registrationErrors_1002_Test() throws Exception {
+        ApiPurchase purchase = new ApiPurchase(null, new BigDecimal("3.25"), 1L, LocalDate.of(2000, 10, 19));
+        String body = (new ObjectMapper()).valueToTree(purchase).toString();
+        this.mockMvc.perform(post("/purchases")
+                .content(body)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(APPLICATION_JSON_UTF8)
+        )
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
+                .andDo(print())
                 .andExpect(jsonPath("error.status").value(422))
-                .andExpect(jsonPath("error.errorCode").value(1050))
-                .andExpect(jsonPath("error.message").value("Field 'date' is empty"))
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(jsonPath("error.errorCode").value(1002))
+                .andExpect(jsonPath("error.message").value("Field 'fuelType' is empty"))
+                .andDo(print());
     }
 
     @Test
-    public void registrationErrors_1052_Test() throws Exception {
-        this.mockMvc.perform(post("/purchases").accept(MediaType.APPLICATION_JSON))
+    public void registrationErrors_1003_Test() throws Exception {
+        ApiPurchase purchase = new ApiPurchase("D", null, 1L, LocalDate.of(2000, 10, 19));
+        String body = (new ObjectMapper()).valueToTree(purchase).toString();
+        this.mockMvc.perform(post("/purchases")
+                .content(body)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(APPLICATION_JSON_UTF8)
+        )
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
+                .andDo(print())
                 .andExpect(jsonPath("error.status").value(422))
-                .andExpect(jsonPath("error.errorCode").value(1050))
-                .andExpect(jsonPath("error.message").value("Field 'date' is empty"))
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(jsonPath("error.errorCode").value(1003))
+                .andExpect(jsonPath("error.message").value("Field 'price' is empty"))
+                .andDo(print());
     }
 
     @Test
-    public void registrationErrors_1053_Test() throws Exception {
-        this.mockMvc.perform(post("/purchases").accept(MediaType.APPLICATION_JSON))
+    public void registrationErrors_1004_Test() throws Exception {
+        ApiPurchase purchase = new ApiPurchase("D", new BigDecimal("3.25"), null, LocalDate.of(2000, 10, 19));
+        String body = (new ObjectMapper()).valueToTree(purchase).toString();
+        this.mockMvc.perform(post("/purchases")
+                .content(body)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(APPLICATION_JSON_UTF8)
+        )
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON + ";charset=UTF-8"))
+                .andDo(print())
                 .andExpect(jsonPath("error.status").value(422))
-                .andExpect(jsonPath("error.errorCode").value(1050))
-                .andExpect(jsonPath("error.message").value("Field 'date' is empty"))
-                .andDo(MockMvcResultHandlers.print());
-    }
-
-
-
-
-
-
-
-    /*        Record record = new Record();
-            assertError(reportController.registrate(record), 1050, "Field 'date' is empty");
-            record.setDate(LocalDate.now());
-            assertError(reportController.registrate(record), 1051, "Field 'fuelType' is empty");
-            record.setFuelType("D-failed-fuel-type");
-            assertError(reportController.registrate(record), 1052, "Field 'price' is empty");
-            record.setPrice(new BigDecimal("3.27"));
-            assertError(reportController.registrate(record), 1053, "Field 'driverId' is empty");
-            record.setDriverId(1L);
-            assertError(reportController.registrate(record), 1054, "Wrong fuel type");*/
-    private void assertError(PurchaseResponse registrateResult, int code, String messge) {
-        Assert.assertNotNull(registrateResult);
-        Assert.assertNull(registrateResult.getPurchase());
-        Assert.assertNotNull(registrateResult.getError());
-        Assert.assertEquals(code, registrateResult.getError().getCode());
-        Assert.assertEquals(messge, registrateResult.getError().getMessage());
+                .andExpect(jsonPath("error.errorCode").value(1004))
+                .andExpect(jsonPath("error.message").value("Field 'driverId' is empty"))
+                .andDo(print());
     }
 }

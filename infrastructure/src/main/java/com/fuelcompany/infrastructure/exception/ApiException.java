@@ -1,4 +1,4 @@
-package com.fuelcompany.application.exception;
+package com.fuelcompany.infrastructure.exception;
 
 
 import com.fuelcompany.domain.error.DomainException;

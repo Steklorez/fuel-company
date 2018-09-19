@@ -1,4 +1,4 @@
-package com.fuelcompany.application.exception;
+package com.fuelcompany.infrastructure.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import static org.springframework.core.annotation.AnnotatedElementUtils.findMerg
  * Converter domain exceptions to API exception with http-statuses
  */
 @ControllerAdvice
-class ConverterExceptions extends ResponseEntityExceptionHandler {
+class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     @ResponseBody

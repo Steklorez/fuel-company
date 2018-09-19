@@ -1,4 +1,4 @@
-package com.fuelcompany.application.exception;
+package com.fuelcompany.infrastructure.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

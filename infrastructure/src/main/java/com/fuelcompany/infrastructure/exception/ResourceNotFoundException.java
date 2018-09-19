@@ -1,4 +1,4 @@
-package com.fuelcompany.application.exception;
+package com.fuelcompany.infrastructure.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

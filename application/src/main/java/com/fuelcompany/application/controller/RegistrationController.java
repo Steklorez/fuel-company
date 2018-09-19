@@ -1,43 +1,56 @@
 package com.fuelcompany.application.controller;
 
-import com.fuelcompany.application.exception.ApiException;
-import com.fuelcompany.domain.error.DomainException;
 import com.fuelcompany.domain.aggregateModels.purchase.Purchase;
+import com.fuelcompany.domain.error.DomainException;
 import com.fuelcompany.infrastructure.api.registration.ApiPurchase;
-import com.fuelcompany.infrastructure.api.registration.PurchaseResponse;
 import com.fuelcompany.infrastructure.api.registration.PurchaseTransformer;
+import com.fuelcompany.infrastructure.exception.ApiException;
+import com.fuelcompany.infrastructure.utils.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
- * Controller to work with REST requests
- * Registration incoming records
+ * Controller with REST requests mapping
+ * Registration incoming ApiPurchase
  */
-@Controller
+@RestController
 @RequestMapping("/purchases")
 public class RegistrationController {
+    private static Logger logger = LoggerFactory.getLogger(RegistrationController.class);
 
     @Autowired
     private Purchase purchase;
 
-//    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-//    @RequestMapping(method = RequestMethod.GET, produces = MediaType.MULTIPART_FORM_DATA_VALUE)
-
     @Transactional
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public PurchaseResponse save(ApiPurchase apiPurchase) {
+    public ApiPurchase save(@RequestBody ApiPurchase request) {
         try {
-            return new PurchaseResponse(PurchaseTransformer.toREST(purchase.save(PurchaseTransformer.toDomain(apiPurchase))));
+            return PurchaseTransformer.toREST(purchase.save(PurchaseTransformer.toDomain(request)));
         } catch (DomainException e) {
-            e.printStackTrace();
+            logger.error("Domain exception", e);
+            throw new ApiException(e);
+        }
+    }
+
+    @Transactional
+    @PostMapping("/file")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public List<ApiPurchase> save(@RequestParam(value = "file") MultipartFile file) {
+        try {
+            return PurchaseTransformer.toREST(purchase.save(PurchaseTransformer.toDomain(FileUtil.convertToObjectList(file))));
+        } catch (DomainException e) {
+            logger.error("Domain exception", e);
             throw new ApiException(e);
         }
     }

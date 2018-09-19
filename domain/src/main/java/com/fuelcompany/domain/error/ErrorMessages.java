@@ -10,11 +10,15 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorMessages {
-    DOMAIN_ERROR_1050(1050, "Field 'date' is empty"),
-    DOMAIN_ERROR_E1051(1051, "Field 'fuelType' is empty"),
-    DOMAIN_ERROR_E1052(1052, "Field 'price' is empty"),
-    DOMAIN_ERROR_E1053(1053, "Field 'driverId' is empty"),
-    DOMAIN_ERROR_E1054(1054, "Wrong fuel type"),
+    DOMAIN_ERROR_1001(1001, "Field 'date' is empty"),
+    DOMAIN_ERROR_1002(1002, "Field 'fuelType' is empty"),
+    DOMAIN_ERROR_1003(1003, "Field 'price' is empty"),
+    DOMAIN_ERROR_1004(1004, "Field 'driverId' is empty"),
+    DOMAIN_ERROR_1005(1005, "Wrong fuel type"),
+
+    DOMAIN_ERROR_E1050(1050, "Empty list of purchase"),
+    DOMAIN_ERROR_E1051(1051, "Too many elements for save"),
+
     DOMAIN_ERROR_E9999(9999, "Internal server error"),
     ;
 

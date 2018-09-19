@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 /**
- * Registration new incoming record with fuel service
+ * Aggregate root element - Save incoming PurchaseItem records
  */
 
 @Service
@@ -20,27 +23,50 @@ public class Purchase {
     @Autowired
     private IReportRepository reportRepository;
 
-    public PurchaseItem save(PurchaseItem purchase) throws DomainException {
+    public PurchaseItem save(PurchaseItem purchaseItem) throws DomainException {
         try {
-            if (purchase.getDate() == null)
-                throw new DomainException(ErrorMessages.DOMAIN_ERROR_1050);
-            if (StringUtils.isEmpty(purchase.getFuelType()))
-                throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1051);
-            if (purchase.getPrice() == null)
-                throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1052);
-            if (purchase.getDriverId() == null)
-                throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1053);
-            if (!FuelType.fuelTypeSet.contains(purchase.getFuelType()))
-                throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1054);
-
-            PurchaseEntity entity = reportRepository.save(buildEntity(purchase));
-            return buildDomainModel(entity);
+            validateFields(purchaseItem);
+            return buildDomainModel(reportRepository.save(buildEntity(purchaseItem)));
         } catch (DomainException e) {
             throw e;
         } catch (Exception e) {
             logger.error("Saving process error", e);
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_E9999);
         }
+    }
+
+    public List<PurchaseItem> save(List<PurchaseItem> purchaseList) throws DomainException {
+        try {
+            if (purchaseList.isEmpty())
+                throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1050);
+
+            if (purchaseList.size() > 5000)
+                throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1051);
+
+            purchaseList.forEach(this::validateFields);
+            return purchaseList.stream()
+                    .map(purch -> buildDomainModel(reportRepository.save(buildEntity(purch))))
+                    .collect(Collectors.toList());
+
+        } catch (DomainException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.error("Saving process error", e);
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_E9999);
+        }
+    }
+
+    private void validateFields(PurchaseItem purchaseItem) {
+        if (purchaseItem.getDate() == null)
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1001);
+        if (StringUtils.isEmpty(purchaseItem.getFuelType()))
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1002);
+        if (purchaseItem.getPrice() == null)
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1003);
+        if (purchaseItem.getDriverId() == null)
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1004);
+        if (!FuelType.fuelTypeSet.contains(purchaseItem.getFuelType()))
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1005);
     }
 
     private PurchaseEntity buildEntity(PurchaseItem item) {

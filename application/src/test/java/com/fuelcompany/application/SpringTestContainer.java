@@ -17,6 +17,8 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringBootTest
 @ActiveProfiles("test")
 @TestPropertySource(locations = "classpath:application.properties")
+
+//TODO optimize creating test context without init() on all classes
 public class SpringTestContainer {
 
     @Autowired
