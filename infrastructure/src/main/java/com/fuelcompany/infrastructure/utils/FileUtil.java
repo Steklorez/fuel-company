@@ -17,7 +17,7 @@ public class FileUtil {
     private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
     private static final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
-    //TODO Generic method
+    //TODO if needed will create Generic method
     public static List<ApiPurchase> convertToObjectList(MultipartFile file) {
         if (file.isEmpty())
             throw new UnprocessableEntityException(0, "Empty file in request");
