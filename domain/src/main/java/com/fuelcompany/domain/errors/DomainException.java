@@ -1,4 +1,4 @@
-package com.fuelcompany.domain.error;
+package com.fuelcompany.domain.errors;
 
 import lombok.Getter;
 

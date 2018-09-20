@@ -1,7 +1,10 @@
 package com.fuelcompany.domain.aggregateModels.purchase;
 
-import com.fuelcompany.domain.error.DomainException;
-import com.fuelcompany.domain.error.ErrorMessages;
+import com.fuelcompany.domain.PurchaseService;
+import com.fuelcompany.domain.dao.IPurchaseDAO;
+import com.fuelcompany.domain.entity.PurchaseEntity;
+import com.fuelcompany.domain.errors.DomainException;
+import com.fuelcompany.domain.errors.ErrorMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +20,17 @@ import java.util.stream.Collectors;
  */
 
 @Service
-public class Purchase {
+public class Purchase implements PurchaseService {
     private static Logger logger = LoggerFactory.getLogger(Purchase.class);
 
     @Autowired
-    private IReportRepository reportRepository;
+    private IPurchaseDAO purchaseRepository;
 
+    @Override
     public PurchaseItem save(PurchaseItem purchaseItem) throws DomainException {
         try {
             validateFields(purchaseItem);
-            return buildDomainModel(reportRepository.save(buildEntity(purchaseItem)));
+            return buildDomainModel(purchaseRepository.save(buildEntity(purchaseItem)));
         } catch (DomainException e) {
             throw e;
         } catch (Exception e) {
@@ -35,6 +39,7 @@ public class Purchase {
         }
     }
 
+    @Override
     public List<PurchaseItem> save(List<PurchaseItem> purchaseList) throws DomainException {
         try {
             if (purchaseList.isEmpty())
@@ -45,7 +50,7 @@ public class Purchase {
 
             purchaseList.forEach(this::validateFields);
             return purchaseList.stream()
-                    .map(purch -> buildDomainModel(reportRepository.save(buildEntity(purch))))
+                    .map(purch -> buildDomainModel(purchaseRepository.save(buildEntity(purch))))
                     .collect(Collectors.toList());
 
         } catch (DomainException e) {
@@ -65,7 +70,7 @@ public class Purchase {
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1003);
         if (purchaseItem.getDriverId() == null)
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1004);
-        if (!FuelType.fuelTypeSet.contains(purchaseItem.getFuelType()))
+        if (!FuelTypeItem.fuelTypeSet.contains(purchaseItem.getFuelType()))
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1005);
     }
 

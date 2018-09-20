@@ -1,4 +1,4 @@
-package com.fuelcompany.domain.aggregateModels.purchase;
+package com.fuelcompany.domain.entity;
 
 
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "REPORT", schema = "PUBLIC")
+@Table(name = "PURCHASE", schema = "PUBLIC")
 @Getter
 @Setter
 @NoArgsConstructor

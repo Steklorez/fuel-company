@@ -4,15 +4,15 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public enum FuelType {
+public enum FuelTypeItem {
     DIESEL("D"),
     GASOLINE_95("95"),
     GASOLINE_98("98");
 
     private final String name;
-    public static final Set<String> fuelTypeSet = Arrays.stream(FuelType.values()).map(FuelType::getName).collect(Collectors.toSet());
+    public static final Set<String> fuelTypeSet = Arrays.stream(FuelTypeItem.values()).map(FuelTypeItem::getName).collect(Collectors.toSet());
 
-    FuelType(String name) {
+    FuelTypeItem(String name) {
         this.name = name;
     }
 

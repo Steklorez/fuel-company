@@ -1,7 +1,7 @@
 package com.fuelcompany.infrastructure.exception;
 
 
-import com.fuelcompany.domain.error.DomainException;
+import com.fuelcompany.domain.errors.DomainException;
 import lombok.Getter;
 
 @Getter
@@ -9,7 +9,7 @@ public class ApiException extends RuntimeException {
     private int errorCode;
     private String message;
 
-    public ApiException(int errorCode, String errorMessage) {
+    ApiException(int errorCode, String errorMessage) {
         this.errorCode = errorCode;
         this.message = errorMessage;
     }

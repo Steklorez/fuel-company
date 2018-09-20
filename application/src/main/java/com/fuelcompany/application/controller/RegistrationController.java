@@ -1,7 +1,7 @@
 package com.fuelcompany.application.controller;
 
 import com.fuelcompany.domain.aggregateModels.purchase.Purchase;
-import com.fuelcompany.domain.error.DomainException;
+import com.fuelcompany.domain.errors.DomainException;
 import com.fuelcompany.infrastructure.api.registration.ApiPurchase;
 import com.fuelcompany.infrastructure.api.registration.PurchaseTransformer;
 import com.fuelcompany.infrastructure.exception.ApiException;
@@ -25,15 +25,14 @@ public class RegistrationController {
     private static Logger logger = LoggerFactory.getLogger(RegistrationController.class);
 
     @Autowired
-    private Purchase purchase;
+    private Purchase purchaseService;
 
     @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public ApiPurchase save(@RequestBody ApiPurchase request) {
         try {
-            return PurchaseTransformer.toREST(purchase.save(PurchaseTransformer.toDomain(request)));
+            return PurchaseTransformer.toREST(purchaseService.save(PurchaseTransformer.toDomain(request)));
         } catch (DomainException e) {
             logger.error("Domain exception", e);
             throw new ApiException(e);
@@ -45,7 +44,7 @@ public class RegistrationController {
     @ResponseStatus(HttpStatus.CREATED)
     public void save(@RequestParam(value = "file") MultipartFile file) {
         try {
-            purchase.save(PurchaseTransformer.toDomain(FileUtil.convertToObjectList(file)));
+            purchaseService.save(PurchaseTransformer.toDomain(FileUtil.convertToObjectList(file)));
         } catch (DomainException e) {
             logger.error("Domain exception", e);
             throw new ApiException(e);
