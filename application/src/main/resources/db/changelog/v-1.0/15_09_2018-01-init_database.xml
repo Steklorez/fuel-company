@@ -11,6 +11,9 @@
             <column name="FUEL_TYPE" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="VOLUME" type="DECIMAL(20, 3)">
+                <constraints nullable="false"/>
+            </column>
             <column name="PRICE" type="DECIMAL(20, 2)">
                 <constraints nullable="false"/>
             </column>

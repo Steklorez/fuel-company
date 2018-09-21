@@ -1,6 +1,6 @@
 package com.fuelcompany.application.controller;
 
-import com.fuelcompany.domain.aggregateModels.purchase.Purchase;
+import com.fuelcompany.domain.PurchaseService;
 import com.fuelcompany.domain.errors.DomainException;
 import com.fuelcompany.infrastructure.api.registration.ApiPurchase;
 import com.fuelcompany.infrastructure.api.registration.PurchaseTransformer;
@@ -25,14 +25,16 @@ public class RegistrationController {
     private static Logger logger = LoggerFactory.getLogger(RegistrationController.class);
 
     @Autowired
-    private Purchase purchaseService;
+    private PurchaseService purchaseService;
+    @Autowired
+    private PurchaseTransformer transformer;
 
     @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ApiPurchase save(@RequestBody ApiPurchase request) {
         try {
-            return PurchaseTransformer.toREST(purchaseService.save(PurchaseTransformer.toDomain(request)));
+            return transformer.toREST(purchaseService.save(transformer.toDomain(request)));
         } catch (DomainException e) {
             logger.error("Domain exception", e);
             throw new ApiException(e);
@@ -44,7 +46,7 @@ public class RegistrationController {
     @ResponseStatus(HttpStatus.CREATED)
     public void save(@RequestParam(value = "file") MultipartFile file) {
         try {
-            purchaseService.save(PurchaseTransformer.toDomain(FileUtil.convertToObjectList(file)));
+            purchaseService.save(transformer.toDomain(FileUtil.convertToObjectList(file)));
         } catch (DomainException e) {
             logger.error("Domain exception", e);
             throw new ApiException(e);

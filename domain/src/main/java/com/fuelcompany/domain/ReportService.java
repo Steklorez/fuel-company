@@ -1,10 +1,13 @@
 package com.fuelcompany.domain;
 
-import com.fuelcompany.domain.aggregateModels.report.GroupByMonthItem;
+import com.fuelcompany.domain.aggregateModels.report.Month;
+import com.fuelcompany.domain.aggregateModels.report.entity.TotalByMonthEntity;
 
 import java.util.List;
 
 public interface ReportService {
 
-    List<GroupByMonthItem> getTotalByMonth(Long driverId);
+    List<TotalByMonthEntity> getAmountByMonths(Long driverId);
+
+    List<Month> getReportByMonth(int numberOfMonth, Long driverId, Integer year);
 }

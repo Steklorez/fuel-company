@@ -1,4 +1,4 @@
-package com.fuelcompany.domain.entity;
+package com.fuelcompany.domain.dao;
 
 
 import lombok.AllArgsConstructor;
@@ -26,6 +26,9 @@ public class PurchaseEntity {
     @Column(name = "FUEL_TYPE", nullable = false, updatable = false)
     private String fuelType;
 
+    @Column(name = "VOLUME", nullable = false, updatable = false)
+    private BigDecimal volume;
+
     @Column(name = "PRICE", nullable = false, updatable = false)
     private BigDecimal price;
 
@@ -39,8 +42,9 @@ public class PurchaseEntity {
     @CreationTimestamp
     private LocalDateTime created;
 
-    public PurchaseEntity(String fuelType, BigDecimal price, Long driverId, LocalDate date) {
+    public PurchaseEntity(String fuelType, BigDecimal volume, BigDecimal price, Long driverId, LocalDate date) {
         this.fuelType = fuelType;
+        this.volume = volume;
         this.price = price;
         this.driverId = driverId;
         this.date = date;

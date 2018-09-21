@@ -1,4 +1,4 @@
-package com.fuelcompany.infrastructure.api.reporting;
+package com.fuelcompany.domain.aggregateModels.report.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,16 +7,12 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
-/**
- *  total spent amount of money grouped by month
- */
-
-@Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApiTotalGroupByMonth {
+public class TotalByMonthEntity {
     private int year;
+    @Setter
     private String month;
     private BigDecimal total;
 }
