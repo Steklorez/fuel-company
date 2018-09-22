@@ -20,10 +20,33 @@ public class ReportTest extends SpringTestContainer {
     @Autowired
     private IPurchaseDAO purchaseDAO;
 
+    /**
+     * 1) test for total spent amount of money grouped by month
+     * 2) list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
+     *
+     * @throws Exception
+     */
     @Test
     @Transactional
     @Rollback
     public void getTotalByMonthAll() throws Exception {
+        /*
+         * GET http://localhost:8080/reports/total/amount
+         * Response structure:
+         * [
+         *     {
+         *         "year": 2037,
+         *         "month": "SEPTEMBER",
+         *         "total": 195
+         *     },
+         *     {
+         *         "year": 2018,
+         *         "month": "JANUARY",
+         *         "total": 52.5
+         *     }
+         * ]
+         */
+
         double mayVolume1 = 5.0;
         double mayVolume2 = 10.0;
         double mayVolume3 = 20.5;
@@ -60,6 +83,30 @@ public class ReportTest extends SpringTestContainer {
                 .andExpect(jsonPath("[1].total").doesNotHaveJsonPath())
                 .andDo(print());
 
+
+
+
+
+
+        /*
+         *GET http://localhost:8080/reports/total/months/6?driverId=2&year=2018
+         *
+         *[
+         *     {
+         *         "year": 2018,
+         *         "records": [
+         *             {
+         *                 "type": "D",
+         *                 "volume": 10,
+         *                 "date": "2018-06-09",
+         *                 "price": 3.25,
+         *                 "totalPrice": 32.5,
+         *                 "driverId": 2
+         *             }
+         *         ]
+         *     }
+         * ]
+         */
         //list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
         //get not exist month
         this.mockMvc.perform(get("/reports/total/months/1"))
@@ -140,17 +187,138 @@ public class ReportTest extends SpringTestContainer {
                 .andDo(print());
     }
 
+
+    /**
+     * statistics for each month, list fuel consumption records grouped by fuel type (each row should contain:
+     * fuel type, volume, average price, total price)
+     *
+     * @throws Exception
+     */
     @Test
     @Transactional
     @Rollback
-    public void getFuelConsumption () throws Exception {
-        //statistics for each month, list fuel consumption records grouped by fuel type
-        //(each row should contain: fuel type, volume, average price, total price)
-        this.mockMvc.perform(get("/reports/total/consumption"))
+    public void getFuelConsumption() throws Exception {
+        /*
+         * GET http://localhost:8080/reports/total/consumption
+         * [
+         *     {
+         *         "year": 2018,
+         *         "month": "2",
+         *         "fuelTypes": [
+         *             {
+         *                 "fuelType": "D",
+         *                 "volume": 10,
+         *                 "averagePrice": 3.25,
+         *                 "totalPrice": 32.5
+         *             }
+         *         ]
+         *     }
+         *  ]
+         */
+
+        //test for expected empty data
+        this.mockMvc.perform(get("/reports/total/consumption?driverId=2&year=2018"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").doesNotHaveJsonPath())
                 .andDo(print());
 
+
+        double mayVolume1 = 5.0;
+        double mayVolume2 = 10.0;
+        double mayVolume3 = 20.5;
+        double mayVolume4 = 40.5;
+        int price1 = 20, price2 = 20;
+        int price3 = 10, price4 = 10;
+        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume1), new BigDecimal(price1), 1L, LocalDate.of(2017, 5, 1)));
+        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume2), new BigDecimal(price2), 2L, LocalDate.of(2017, 5, 3)));
+        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume3), new BigDecimal(price3), 2L, LocalDate.of(2017, 6, 20)));
+
+        //test for existing all inserted records
+        this.mockMvc.perform(get("/reports/total/consumption"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("[0].year").value(2017))
+                .andExpect(jsonPath("[0].month").value(5))
+                .andExpect(jsonPath("[0].fuelTypes").isArray())
+                .andExpect(jsonPath("[0].fuelTypes[0].fuelType").value("D"))
+                .andExpect(jsonPath("[0].fuelTypes[0].volume").value(mayVolume1 + mayVolume2))
+                .andExpect(jsonPath("[0].fuelTypes[0].averagePrice").value((price1 + price2) / 2))
+                .andExpect(jsonPath("[0].fuelTypes[0].totalPrice").value(mayVolume1 * price1 + mayVolume2 * price2))
+                .andExpect(jsonPath("[0].fuelTypes[1]").doesNotExist())
+
+                .andExpect(jsonPath("[1].year").value(2017))
+                .andExpect(jsonPath("[1].month").value(6))
+                .andExpect(jsonPath("[1].fuelTypes").isArray())
+                .andExpect(jsonPath("[1].fuelTypes[0].fuelType").value("D"))
+                .andExpect(jsonPath("[1].fuelTypes[0].volume").value(mayVolume3))
+                .andExpect(jsonPath("[1].fuelTypes[0].averagePrice").value((price3)))
+                .andExpect(jsonPath("[1].fuelTypes[0].totalPrice").value(mayVolume3 * price3))
+                .andExpect(jsonPath("[1].fuelTypes[1]").doesNotExist())
+                .andDo(print());
+
+        //test for not existing driverId
+        this.mockMvc.perform(get("/reports/total/consumption?driverId=9999999"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("[0]").doesNotExist())
+                .andExpect(jsonPath("[0]").doesNotHaveJsonPath());
+
+        //test for existing all by driverId
+        this.mockMvc.perform(get("/reports/total/consumption?driverId=2"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("[0].year").value(2017))
+                .andExpect(jsonPath("[0].month").value(5))
+                .andExpect(jsonPath("[0].fuelTypes").isArray())
+                .andExpect(jsonPath("[0].fuelTypes[0].fuelType").value("D"))
+                .andExpect(jsonPath("[0].fuelTypes[0].volume").value(mayVolume2))
+                .andExpect(jsonPath("[0].fuelTypes[0].averagePrice").value(price2))
+                .andExpect(jsonPath("[0].fuelTypes[0].totalPrice").value( mayVolume2 * price2))
+                .andExpect(jsonPath("[0].fuelTypes[1]").doesNotExist())
+
+                .andExpect(jsonPath("[1].year").value(2017))
+                .andExpect(jsonPath("[1].month").value(6))
+                .andExpect(jsonPath("[1].fuelTypes").isArray())
+                .andExpect(jsonPath("[1].fuelTypes[0].fuelType").value("D"))
+                .andExpect(jsonPath("[1].fuelTypes[0].volume").value(mayVolume3))
+                .andExpect(jsonPath("[1].fuelTypes[0].averagePrice").value((price3)))
+                .andExpect(jsonPath("[1].fuelTypes[0].totalPrice").value(mayVolume3 * price3))
+                .andExpect(jsonPath("[1].fuelTypes[1]").doesNotExist())
+                .andDo(print());
+
+        //test for not existing year
+        this.mockMvc.perform(get("/reports/total/consumption?year=2018"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("[0]").doesNotExist())
+                .andExpect(jsonPath("[0]").doesNotHaveJsonPath());
+
+        //test for not existing year
+        this.mockMvc.perform(get("/reports/total/consumption?year=2017"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("[0].year").value(2017))
+                .andExpect(jsonPath("[1].year").value(2017))
+                .andExpect(jsonPath("[2].year").doesNotExist())
+                .andExpect(jsonPath("[2].year").doesNotHaveJsonPath());
+
+        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume4), new BigDecimal(price4), 2L, LocalDate.of(2018, 9, 20)));
+
+        //test for not existing year
+        this.mockMvc.perform(get("/reports/total/consumption?year=2018"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("[0].year").value(2018))
+                .andExpect(jsonPath("[1].year").doesNotExist())
+                .andExpect(jsonPath("[1].year").doesNotHaveJsonPath())
+
+                 .andExpect(jsonPath("[0].month").value(9))
+                .andExpect(jsonPath("[0].fuelTypes").isArray())
+                .andExpect(jsonPath("[0].fuelTypes[0].fuelType").value("D"))
+                .andExpect(jsonPath("[0].fuelTypes[0].volume").value(mayVolume4))
+                .andExpect(jsonPath("[0].fuelTypes[0].averagePrice").value(price4))
+                .andExpect(jsonPath("[0].fuelTypes[0].totalPrice").value( mayVolume4 * price4))
+                .andExpect(jsonPath("[0].fuelTypes[1]").doesNotExist());
     }
 }

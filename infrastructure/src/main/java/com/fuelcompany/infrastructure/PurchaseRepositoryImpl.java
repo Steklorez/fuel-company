@@ -79,8 +79,8 @@ public class PurchaseRepositoryImpl implements IPurchaseDAO {
         StringBuilder predicate = new StringBuilder();
         if (driverId != null) predicate.append(" p.DRIVER_ID = ").append(driverId);
         if (year != null) {
-            if (predicate.length() > 0) predicate.insert(0, " AND");
-            predicate.append(" p.DRIVER_ID = ").append(driverId);
+            if (predicate.length() > 0) predicate.append(" AND");
+            predicate.append(" EXTRACT(YEAR FROM p.DATE) = ").append(year);
         }
         if (predicate.length() > 0) predicate.insert(0, " WHERE");
         return predicate;

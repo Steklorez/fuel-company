@@ -31,6 +31,29 @@ public class RegistrationTest extends SpringTestContainer {
     @Transactional
     @Rollback
     public void registrationTest() throws Exception {
+        /*
+         * POST http://localhost:8080/purchases
+         * Incoming structure:
+         * {
+         *       "fuelType": "D",
+         *       "volume":20,
+         *       "price": 3.25,
+         *       "driverId": 1,
+         *       "date": "2037-09-09"
+         *   }
+         *
+         *
+         *  Result structure:
+         * {
+         *     "id": 775,
+         *     "volume": 20,
+         *     "fuelType": "D",
+         *     "price": 3.25,
+         *     "driverId": 1,
+         *     "date": "2037-09-09"
+         * }
+         */
+
         ApiPurchase purchase = new ApiPurchase("D", new BigDecimal(12.000), new BigDecimal("3.25"), 1L, LocalDate.of(2000, 10, 19));
         String body = (new ObjectMapper()).valueToTree(purchase).toString();
         this.mockMvc.perform(post("/purchases")
@@ -160,6 +183,21 @@ public class RegistrationTest extends SpringTestContainer {
     @Rollback
     @Transactional
     public void test() throws Exception {
+        /*
+         * MULTIPART_FORM_DATA_VALUE
+         * POST http://localhost:8080/purchases/file
+         * Incoming structure:
+         *
+         * [
+         *  {
+         *       "fuelType": "D",
+         *       "volume":20,
+         *       "price": 3.25,
+         *       "driverId": 1,
+         *       "date": "2037-09-09"
+         *   }
+         * ]
+         */
         Assert.assertEquals(0, ((Number) entityManager.createQuery("SELECT count(*) FROM PurchaseEntity p").getSingleResult()).intValue());
         this.mockMvc.perform(MockMvcRequestBuilders.multipart("/purchases/file")
                 .file("file", Files.readAllBytes(new File("src/test/resources/multipart.json").toPath()))
