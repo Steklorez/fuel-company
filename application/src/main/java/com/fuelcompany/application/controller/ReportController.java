@@ -2,6 +2,7 @@ package com.fuelcompany.application.controller;
 
 import com.fuelcompany.domain.ReportService;
 import com.fuelcompany.domain.errors.DomainException;
+import com.fuelcompany.infrastructure.api.reporting.ApiFuelConsumption;
 import com.fuelcompany.infrastructure.api.reporting.ApiReportByMonth;
 import com.fuelcompany.infrastructure.api.reporting.ApiTotalGroupByMonth;
 import com.fuelcompany.infrastructure.api.reporting.ReportTransformer;
@@ -17,7 +18,7 @@ import java.util.List;
 
 /**
  * Controller with REST requests mapping
- * Registration incoming ApiPurchase
+ * Reporting about all collected data
  */
 @RestController
 @RequestMapping("/reports/total")
@@ -30,6 +31,12 @@ public class ReportController {
     @Autowired
     private ReportTransformer transformer;
 
+    /**
+     * total spent amount of money grouped by month
+     *
+     * @param driverId
+     * @return List<ApiTotalGroupByMonth>
+     */
     @GetMapping(path = "/amount")
     @ResponseStatus(HttpStatus.OK)
     public List<ApiTotalGroupByMonth> getAmountByMonths(@RequestParam(value = "driverId", required = false) Long driverId) {
@@ -41,6 +48,14 @@ public class ReportController {
         }
     }
 
+    /**
+     * list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
+     *
+     * @param driverId
+     * @param year
+     * @param monthsNumber
+     * @return List<ApiReportByMonth>
+     */
     @GetMapping(path = "/months/{monthsNumber}")
     @ResponseStatus(HttpStatus.OK)
     public List<ApiReportByMonth> getReportByMonth(@RequestParam(value = "driverId", required = false) Long driverId,
@@ -52,5 +67,20 @@ public class ReportController {
             logger.error("Domain exception", e);
             throw new ApiException(e);
         }
+    }
+
+
+    /**
+     * statistics for each month, list fuel consumption records grouped by fuel type (each row should contain: fuel type, volume, average price, total price)
+     *
+     * @param driverId
+     * @param year
+     * @return
+     */
+    @GetMapping(path = "/consumption")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ApiFuelConsumption> getFuelConsumption(@RequestParam(value = "driverId", required = false) Long driverId,
+                                                       @RequestParam(value = "year", required = false) Integer year) {
+        return transformer.toRESTFuelConsumption(reportService.getFuelConsumption(driverId, year));
     }
 }

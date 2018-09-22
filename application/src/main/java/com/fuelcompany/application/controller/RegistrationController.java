@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Controller with REST requests mapping
- * Registration incoming ApiPurchase
+ * Registration(save) incoming data
  */
 @RestController
 @RequestMapping("/purchases")
@@ -29,6 +29,11 @@ public class RegistrationController {
     @Autowired
     private PurchaseTransformer transformer;
 
+    /**
+     *  register one single record
+     * @param request
+     * @return
+     */
     @Transactional
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -41,6 +46,10 @@ public class RegistrationController {
         }
     }
 
+    /**
+     * register multiple records in one file
+     * @param file
+     */
     @Transactional
     @PostMapping(path = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)

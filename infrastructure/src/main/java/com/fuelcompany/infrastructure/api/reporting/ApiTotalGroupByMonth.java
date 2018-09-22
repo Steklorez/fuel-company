@@ -11,10 +11,8 @@ import java.math.BigDecimal;
  *  total spent amount of money grouped by month
  */
 
-@Setter
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class ApiTotalGroupByMonth {
     private int year;
     private String month;

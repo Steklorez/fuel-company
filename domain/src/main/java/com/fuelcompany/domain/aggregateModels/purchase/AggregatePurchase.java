@@ -1,8 +1,8 @@
 package com.fuelcompany.domain.aggregateModels.purchase;
 
+import com.fuelcompany.domain.IPurchaseDAO;
 import com.fuelcompany.domain.PurchaseService;
-import com.fuelcompany.domain.dao.IPurchaseDAO;
-import com.fuelcompany.domain.dao.PurchaseEntity;
+import com.fuelcompany.domain.aggregateModels.purchase.entity.PurchaseEntity;
 import com.fuelcompany.domain.errors.DomainException;
 import com.fuelcompany.domain.errors.ErrorMessages;
 import org.slf4j.Logger;

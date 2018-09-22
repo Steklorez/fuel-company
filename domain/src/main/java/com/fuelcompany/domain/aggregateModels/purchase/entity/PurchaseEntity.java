@@ -1,4 +1,4 @@
-package com.fuelcompany.domain.dao;
+package com.fuelcompany.domain.aggregateModels.purchase.entity;
 
 
 import lombok.AllArgsConstructor;

@@ -1,5 +1,7 @@
-package com.fuelcompany.domain.dao;
+package com.fuelcompany.domain;
 
+import com.fuelcompany.domain.aggregateModels.purchase.entity.PurchaseEntity;
+import com.fuelcompany.domain.aggregateModels.report.entity.FuelConsumptionEntity;
 import com.fuelcompany.domain.aggregateModels.report.entity.RecordByMonthEntity;
 import com.fuelcompany.domain.aggregateModels.report.entity.TotalByMonthEntity;
 
@@ -12,4 +14,6 @@ public interface IPurchaseDAO {
     List<TotalByMonthEntity> getAmountByMonths(Long driverId);
 
     List<RecordByMonthEntity> getReportByMonth(int monthsNumber, Long driverId, Integer year);
+
+    List<FuelConsumptionEntity> getFuelConsumption(Long driverId, Integer year);
 }
