@@ -30,7 +30,9 @@ public class AggregatePurchase implements PurchaseService {
     public Purchase save(Purchase purchase) throws DomainException {
         try {
             validateFields(purchase);
-            return buildDomainModel(purchaseRepository.save(buildEntity(purchase)));
+            Purchase result = buildDomainModel(purchaseRepository.save(buildEntity(purchase)));
+            logger.info("1 purchase saved. Id=" + result.getId());
+            return result;
         } catch (DomainException e) {
             throw e;
         } catch (Exception e) {
@@ -49,9 +51,11 @@ public class AggregatePurchase implements PurchaseService {
                 throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1051);
 
             purchaseList.forEach(this::validateFields);
-            return purchaseList.stream()
+            List<Purchase> collect = purchaseList.stream()
                     .map(purchase -> buildDomainModel(purchaseRepository.save(buildEntity(purchase))))
                     .collect(Collectors.toList());
+            logger.info("Saved " + collect.size() + " records from file.");
+            return collect;
 
         } catch (DomainException e) {
             throw e;
