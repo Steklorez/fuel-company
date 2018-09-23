@@ -5,13 +5,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.*;
 
-@Component
 public class ConnectionTest extends SpringTestContainer {
     private static Logger logger = LoggerFactory.getLogger(ConnectionTest.class);
 

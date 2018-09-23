@@ -15,7 +15,6 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
-//TODO optimize creating test context without init() on all classes
 public class SpringTestContainer {
 
     @Autowired
