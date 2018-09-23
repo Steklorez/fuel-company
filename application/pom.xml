@@ -53,6 +53,9 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <activatedProperties>h2</activatedProperties>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>com.h2database</groupId>
@@ -62,6 +65,9 @@
         </profile>
         <profile>
             <id>postgres</id>
+            <properties>
+                <activatedProperties>postgres</activatedProperties>
+            </properties>
             <dependencies>
                 <dependency>
                     <groupId>org.postgresql</groupId>

@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +20,7 @@ import java.util.List;
  * Reporting about all collected data
  */
 @RestController
-@RequestMapping("/reports/total")
-@Transactional(readOnly = true)
+@RequestMapping("/reports")
 public class ReportController {
     private static Logger logger = LoggerFactory.getLogger(ReportController.class);
 
@@ -41,7 +39,7 @@ public class ReportController {
     @ResponseStatus(HttpStatus.OK)
     public List<ApiTotalGroupByMonth> getAmountByMonths(@RequestParam(value = "driverId", required = false) Long driverId) {
         try {
-            return transformer.toREST(reportService.getAmountByMonths(driverId));
+            return transformer.toRESTAmountMoney(reportService.getAmountByMonths(driverId));
         } catch (DomainException e) {
             logger.error("Domain exception", e);
             throw new ApiException(e);

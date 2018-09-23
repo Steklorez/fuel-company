@@ -31,7 +31,7 @@ public class ReportTest extends SpringTestContainer {
     @Rollback
     public void getTotalByMonthAll() throws Exception {
         /*
-         * GET http://localhost:8080/reports/total/amount
+         * GET http://localhost:8080/reports/amount
          * Response structure:
          * [
          *     {
@@ -61,7 +61,7 @@ public class ReportTest extends SpringTestContainer {
 
         //test for total spent amount of money grouped by month
         //calculate total by two months in one year
-        this.mockMvc.perform(get("/reports/total/amount"))
+        this.mockMvc.perform(get("/reports/amount"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").value(2017))
@@ -73,7 +73,7 @@ public class ReportTest extends SpringTestContainer {
 
         //test for total spent amount of money grouped by month
         //calculate total by driverId in one year
-        this.mockMvc.perform(get("/reports/total/amount?driverId=1"))
+        this.mockMvc.perform(get("/reports/amount?driverId=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").value(2017))
@@ -89,7 +89,7 @@ public class ReportTest extends SpringTestContainer {
 
 
         /*
-         *GET http://localhost:8080/reports/total/months/6?driverId=2&year=2018
+         *GET http://localhost:8080/reports/months/6?driverId=2&year=2018
          *
          *[
          *     {
@@ -109,7 +109,7 @@ public class ReportTest extends SpringTestContainer {
          */
         //list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
         //get not exist month
-        this.mockMvc.perform(get("/reports/total/months/1"))
+        this.mockMvc.perform(get("/reports/months/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").doesNotHaveJsonPath())
@@ -117,7 +117,7 @@ public class ReportTest extends SpringTestContainer {
 
         //list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
         //get total by month N5
-        this.mockMvc.perform(get("/reports/total/months/5"))
+        this.mockMvc.perform(get("/reports/months/5"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").value(2017))
@@ -140,14 +140,14 @@ public class ReportTest extends SpringTestContainer {
 
         //list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
         //not exist month with real driverId
-        this.mockMvc.perform(get("/reports/total/months/3?driverId=2"))
+        this.mockMvc.perform(get("/reports/months/3?driverId=2"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").doesNotHaveJsonPath());
 
         //list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
         //get total by 5 month driverId=2
-        this.mockMvc.perform(get("/reports/total/months/6?driverId=2"))
+        this.mockMvc.perform(get("/reports/months/6?driverId=2"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").value(2017))
@@ -171,7 +171,7 @@ public class ReportTest extends SpringTestContainer {
         int price30 = 30;
         purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(volume40_5), new BigDecimal(price10), 3L, LocalDate.of(year2017, 8, 20)));
         purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(volume40_5), new BigDecimal(price30), 3L, LocalDate.of(year2018, 8, 20)));
-        this.mockMvc.perform(get("/reports/total/months/8?driverId=3"))
+        this.mockMvc.perform(get("/reports/months/8?driverId=3"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").value(year2018))
@@ -199,7 +199,7 @@ public class ReportTest extends SpringTestContainer {
     @Rollback
     public void getFuelConsumption() throws Exception {
         /*
-         * GET http://localhost:8080/reports/total/consumption
+         * GET http://localhost:8080/reports/consumption
          * [
          *     {
          *         "year": 2018,
@@ -217,7 +217,7 @@ public class ReportTest extends SpringTestContainer {
          */
 
         //test for expected empty data
-        this.mockMvc.perform(get("/reports/total/consumption?driverId=2&year=2018"))
+        this.mockMvc.perform(get("/reports/consumption?driverId=2&year=2018"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").doesNotHaveJsonPath())
@@ -235,7 +235,7 @@ public class ReportTest extends SpringTestContainer {
         purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume3), new BigDecimal(price3), 2L, LocalDate.of(2017, 6, 20)));
 
         //test for existing all inserted records
-        this.mockMvc.perform(get("/reports/total/consumption"))
+        this.mockMvc.perform(get("/reports/consumption"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").value(2017))
@@ -258,14 +258,14 @@ public class ReportTest extends SpringTestContainer {
                 .andDo(print());
 
         //test for not existing driverId
-        this.mockMvc.perform(get("/reports/total/consumption?driverId=9999999"))
+        this.mockMvc.perform(get("/reports/consumption?driverId=9999999"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0]").doesNotExist())
                 .andExpect(jsonPath("[0]").doesNotHaveJsonPath());
 
         //test for existing all by driverId
-        this.mockMvc.perform(get("/reports/total/consumption?driverId=2"))
+        this.mockMvc.perform(get("/reports/consumption?driverId=2"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").value(2017))
@@ -288,14 +288,14 @@ public class ReportTest extends SpringTestContainer {
                 .andDo(print());
 
         //test for not existing year
-        this.mockMvc.perform(get("/reports/total/consumption?year=2018"))
+        this.mockMvc.perform(get("/reports/consumption?year=2018"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0]").doesNotExist())
                 .andExpect(jsonPath("[0]").doesNotHaveJsonPath());
 
         //test for not existing year
-        this.mockMvc.perform(get("/reports/total/consumption?year=2017"))
+        this.mockMvc.perform(get("/reports/consumption?year=2017"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").value(2017))
@@ -306,7 +306,7 @@ public class ReportTest extends SpringTestContainer {
         purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume4), new BigDecimal(price4), 2L, LocalDate.of(2018, 9, 20)));
 
         //test for not existing year
-        this.mockMvc.perform(get("/reports/total/consumption?year=2018"))
+        this.mockMvc.perform(get("/reports/consumption?year=2018"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").value(2018))

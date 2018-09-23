@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,11 +26,13 @@ public class PurchaseRepositoryImpl implements IPurchaseDAO {
     private PurchaseRepository purchaseRepository;
 
     @Override
+    @Transactional
     public PurchaseEntity save(PurchaseEntity report) {
         return purchaseRepository.save(report);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TotalByMonthEntity> getAmountByMonths(Long driverId) {
         String builder =
                 "SELECT EXTRACT(YEAR FROM p.DATE) AS year, EXTRACT(MONTH FROM p.DATE) AS month, SUM(p.VOLUME * p.PRICE) AS total" +
@@ -41,6 +44,7 @@ public class PurchaseRepositoryImpl implements IPurchaseDAO {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<RecordByMonthEntity> getReportByMonth(int monthsNumber, Long driverId, Integer year) {
         String sql =
                 "SELECT p.FUEL_TYPE AS type," +
@@ -60,6 +64,7 @@ public class PurchaseRepositoryImpl implements IPurchaseDAO {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<FuelConsumptionEntity> getFuelConsumption(Long driverId, Integer year) {
         String sql =
                 "SELECT p.FUEL_TYPE AS type," +

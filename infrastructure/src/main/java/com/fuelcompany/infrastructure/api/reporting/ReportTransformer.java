@@ -7,6 +7,8 @@ import com.fuelcompany.domain.aggregateModels.report.RecordByMonthItem;
 import com.fuelcompany.domain.aggregateModels.report.entity.TotalByMonthEntity;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,12 +16,12 @@ import java.util.stream.Collectors;
 @Component
 public class ReportTransformer {
 
-    public List<ApiTotalGroupByMonth> toREST(List<TotalByMonthEntity> total) {
-        return total.stream().map(this::toREST).collect(Collectors.toList());
+    public List<ApiTotalGroupByMonth> toRESTAmountMoney(List<TotalByMonthEntity> total) {
+        return total.stream().map(this::toRESTAmountMoney).collect(Collectors.toList());
     }
 
-    private ApiTotalGroupByMonth toREST(TotalByMonthEntity item) {
-        return new ApiTotalGroupByMonth(item.getYear(), item.getMonth(), item.getTotal().stripTrailingZeros());
+    private ApiTotalGroupByMonth toRESTAmountMoney(TotalByMonthEntity item) {
+        return new ApiTotalGroupByMonth(item.getYear(), item.getMonth(), roundTo2AndStripZeros(item.getTotal()));
     }
 
     public List<ApiReportByMonth> toRESTByMonth(List<Month> totalInMonth) {
@@ -34,7 +36,7 @@ public class ReportTransformer {
         if (months == null) return Collections.emptyList();
         return months.stream()
                 .map(r ->
-                        new ApiReportByMonthRecord(r.getType(), r.getVolume(), r.getDate(), r.getPrice(), r.getTotalPrice().stripTrailingZeros(), r.getDriverId()))
+                        new ApiReportByMonthRecord(r.getType(), roundTo3AndStripZeros(r.getVolume()), r.getDate(), roundTo2AndStripZeros(r.getPrice()), roundTo2AndStripZeros(r.getTotalPrice()), r.getDriverId()))
                 .collect(Collectors.toList());
     }
 
@@ -49,15 +51,15 @@ public class ReportTransformer {
     private List<ApiFuelConsumptionRecord> getFuelConsumptions(List<FuelConsumptionFuelType> list) {
         return list.stream()
                 .map(r ->
-                        new ApiFuelConsumptionRecord(r.getFuelType(), r.getVolume(), r.getAveragePrice(), r.getTotalPrice()))
+                        new ApiFuelConsumptionRecord(r.getFuelType(), roundTo3AndStripZeros(r.getVolume()), roundTo2AndStripZeros(r.getAveragePrice()), roundTo3AndStripZeros(r.getTotalPrice())))
                 .collect(Collectors.toList());
     }
 
-    private List<ApiFuelConsumptionRecord> getFuelConsumptionsFuelTypes(List<FuelConsumptionFuelType> fuelTypes) {
-        if (fuelTypes == null) return Collections.emptyList();
-        return fuelTypes.stream()
-                .map(fuelType ->
-                        new ApiFuelConsumptionRecord(fuelType.getFuelType(), fuelType.getVolume(), fuelType.getAveragePrice(), fuelType.getTotalPrice()))
-                .collect(Collectors.toList());
+    private BigDecimal roundTo2AndStripZeros(BigDecimal unRounded) {
+        return unRounded.setScale(2, RoundingMode.HALF_EVEN);
+    }
+
+    private BigDecimal roundTo3AndStripZeros(BigDecimal unRounded) {
+        return unRounded.setScale(3, RoundingMode.HALF_EVEN);
     }
 }
