@@ -1,7 +1,9 @@
 # Test REST-project
 Build application by "mvn clean package"
 
-By default application will create local file for H2 database and use it. If need to use postgres, build with command "-Ppostgres".
+By default application will create local file for H2 database and use it. 
+
+If need to use postgres, build with command "-Ppostgres".
 
 build: mvn package
 
