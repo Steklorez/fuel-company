@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>application</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>application</name>
@@ -13,7 +13,7 @@
     <parent>
         <groupId>com.fuel-company</groupId>
         <artifactId>fuel</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>com.fuel-company</groupId>
             <artifactId>infrastructure</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -83,9 +83,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/../../</outputDirectory>
+                    <finalName>fuel-company-${project.parent.version}</finalName>
+                </configuration>
             </plugin>
         </plugins>
     </build>
-
-
 </project>

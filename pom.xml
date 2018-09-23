@@ -7,7 +7,7 @@
     <groupId>com.fuel-company</groupId>
     <artifactId>fuel</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -25,7 +25,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <infrastructure.version>0.0.1-SNAPSHOT</infrastructure.version>
+        <infrastructure.version>1.0.0-SNAPSHOT</infrastructure.version>
     </properties>
 
 </project>
