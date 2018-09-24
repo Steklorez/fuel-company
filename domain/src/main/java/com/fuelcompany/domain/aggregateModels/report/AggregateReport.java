@@ -5,6 +5,10 @@ import com.fuelcompany.domain.ReportService;
 import com.fuelcompany.domain.aggregateModels.report.entity.FuelConsumptionEntity;
 import com.fuelcompany.domain.aggregateModels.report.entity.RecordByMonthEntity;
 import com.fuelcompany.domain.aggregateModels.report.entity.TotalByMonthEntity;
+import com.fuelcompany.domain.errors.DomainException;
+import com.fuelcompany.domain.errors.ErrorMessages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,17 +20,23 @@ import java.util.stream.Collectors;
 
 @Service
 public class AggregateReport implements ReportService {
+    private static Logger logger = LoggerFactory.getLogger(AggregateReport.class);
 
     @Autowired
     private IPurchaseDAO purchaseDAO;
 
     @Override
-    public List<TotalByMonthEntity> getAmountByMonths(Long driverId) {
-        List<TotalByMonthEntity> totalByMonth = purchaseDAO.getAmountByMonths(driverId);
-        for (TotalByMonthEntity item : totalByMonth) {
-            item.setMonth(getMonthName(item.getMonth()));
+    public List<TotalByMonthEntity> getAmountByMonths(Long driverId) throws DomainException {
+        try {
+            List<TotalByMonthEntity> totalByMonth = purchaseDAO.getAmountByMonths(driverId);
+            for (TotalByMonthEntity item : totalByMonth) {
+                item.setMonth(getMonthName(item.getMonth()));
+            }
+            return totalByMonth;
+        } catch (Exception e) {
+            logger.error("Saving process error", e);
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_E9999);
         }
-        return totalByMonth;
     }
 
     private String getMonthName(String number) {
@@ -34,15 +44,19 @@ public class AggregateReport implements ReportService {
     }
 
     @Override
-    public List<Month> getReportByMonth(int numberOfMonth, Long driverId, Integer year) {
-        List<RecordByMonthEntity> reportByMonth = purchaseDAO.getReportByMonth(numberOfMonth, driverId, year);
-        Map<Integer, List<RecordByMonthEntity>> yearsMap = reportByMonth.stream().collect(Collectors.groupingBy(RecordByMonthEntity::getYear));
-
-        return yearsMap.keySet().stream()
-                .map(yearKey ->
-                        new Month(yearKey, collectAllMonthsRecords(yearsMap.get(yearKey))))
-                .sorted((o1, o2) -> o2.getYear().compareTo(o1.getYear()))
-                .collect(Collectors.toList());
+    public List<Month> getReportByMonth(int numberOfMonth, Long driverId, Integer year) throws DomainException {
+        try {
+            List<RecordByMonthEntity> reportByMonth = purchaseDAO.getReportByMonth(numberOfMonth, driverId, year);
+            Map<Integer, List<RecordByMonthEntity>> yearsMap = reportByMonth.stream().collect(Collectors.groupingBy(RecordByMonthEntity::getYear));
+            return yearsMap.keySet().stream()
+                    .map(yearKey ->
+                            new Month(yearKey, collectAllMonthsRecords(yearsMap.get(yearKey))))
+                    .sorted((o1, o2) -> o2.getYear().compareTo(o1.getYear()))
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Saving process error", e);
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_E9999);
+        }
     }
 
     private List<RecordByMonthItem> collectAllMonthsRecords(List<RecordByMonthEntity> entityList) {
@@ -53,21 +67,26 @@ public class AggregateReport implements ReportService {
     }
 
     @Override
-    public List<FuelConsumption> getFuelConsumption(Long driverId, Integer year) {
-        List<FuelConsumptionEntity> records = purchaseDAO.getFuelConsumption(driverId, year);
-        Map<String, List<FuelConsumptionEntity>> yearsMonth = records.stream().collect(Collectors.groupingBy(r -> r.getYear() + ":" + r.getMonth()));
-        List<FuelConsumption> result = new ArrayList<>();
+    public List<FuelConsumption> getFuelConsumption(Long driverId, Integer year) throws DomainException {
+        try {
+            List<FuelConsumptionEntity> records = purchaseDAO.getFuelConsumption(driverId, year);
+            Map<String, List<FuelConsumptionEntity>> yearsMonth = records.stream().collect(Collectors.groupingBy(r -> r.getYear() + ":" + r.getMonth()));
+            List<FuelConsumption> result = new ArrayList<>();
 
-        for (Map.Entry<String, List<FuelConsumptionEntity>> entry : yearsMonth.entrySet()) {
-            List<FuelConsumptionFuelType> resultRecordList = entry.getValue().stream()
-                    .map(e ->
-                            new FuelConsumptionFuelType(e.getType(), e.getVolume(), e.getAveragePrice(), e.getTotalPrice()))
-                    .collect(Collectors.toList());
+            for (Map.Entry<String, List<FuelConsumptionEntity>> entry : yearsMonth.entrySet()) {
+                List<FuelConsumptionFuelType> resultRecordList = entry.getValue().stream()
+                        .map(e ->
+                                new FuelConsumptionFuelType(e.getType(), e.getVolume(), e.getAveragePrice(), e.getTotalPrice()))
+                        .collect(Collectors.toList());
 
-            String[] yearMonth = entry.getKey().split(":");
-            result.add(new FuelConsumption(Integer.valueOf(yearMonth[0]), yearMonth[1], resultRecordList));
+                String[] yearMonth = entry.getKey().split(":");
+                result.add(new FuelConsumption(Integer.valueOf(yearMonth[0]), yearMonth[1], resultRecordList));
+            }
+            result.sort(Comparator.comparing(FuelConsumption::getYear).reversed().thenComparing(FuelConsumption::getMonth));
+            return result;
+        } catch (Exception e) {
+            logger.error("Saving process error", e);
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_E9999);
         }
-        result.sort(Comparator.comparing(FuelConsumption::getYear).reversed().thenComparing(FuelConsumption::getMonth));
-        return result;
     }
 }

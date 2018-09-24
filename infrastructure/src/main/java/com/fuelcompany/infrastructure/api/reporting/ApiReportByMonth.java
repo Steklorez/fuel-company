@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.List;
 
 /**
- *  list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
+ * list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
  */
 
 @Getter

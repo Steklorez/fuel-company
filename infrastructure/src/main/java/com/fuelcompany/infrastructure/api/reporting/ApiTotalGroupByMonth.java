@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.math.BigDecimal;
 
 /**
- *  total spent amount of money grouped by month
+ * total spent amount of money grouped by month
  */
 
 @Getter

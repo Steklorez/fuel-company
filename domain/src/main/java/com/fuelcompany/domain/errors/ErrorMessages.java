@@ -5,8 +5,8 @@ import lombok.Getter;
 
 
 /**
-* All business logic errors
-*/
+ * All business logic errors
+ */
 
 @Getter
 public enum ErrorMessages {

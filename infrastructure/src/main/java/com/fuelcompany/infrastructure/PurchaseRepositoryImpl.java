@@ -68,15 +68,15 @@ public class PurchaseRepositoryImpl implements IPurchaseDAO {
     public List<FuelConsumptionEntity> getFuelConsumption(Long driverId, Integer year) {
         String sql =
                 "SELECT p.FUEL_TYPE AS type," +
-                " SUM(p.VOLUME) AS volume," +
-                " AVG(p.PRICE) AS averagePrice," +
-                " SUM(p.VOLUME * p.PRICE) AS totalPrice," +
-                " EXTRACT(YEAR FROM p.DATE) AS year," +
-                " EXTRACT(MONTH FROM p.DATE) AS month" +
-                " FROM PURCHASE p" +
-                getFuelConsumptionPredicates(driverId, year) +
-                " GROUP BY year, month, type" +
-                " ORDER BY year DESC, month ASC";
+                        " SUM(p.VOLUME) AS volume," +
+                        " AVG(p.PRICE) AS averagePrice," +
+                        " SUM(p.VOLUME * p.PRICE) AS totalPrice," +
+                        " EXTRACT(YEAR FROM p.DATE) AS year," +
+                        " EXTRACT(MONTH FROM p.DATE) AS month" +
+                        " FROM PURCHASE p" +
+                        getFuelConsumptionPredicates(driverId, year) +
+                        " GROUP BY year, month, type" +
+                        " ORDER BY year DESC, month ASC";
         return jdbcTemplate.query(sql, new FuelConsumptionMapper());
     }
 

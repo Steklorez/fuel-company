@@ -28,6 +28,6 @@ public class SpringTestContainer {
     }
 
     @Test
-    public void initTest(){
+    public void initTest() {
     }
 }

@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,10 +38,13 @@ public class ReportController {
      * @return List<ApiTotalGroupByMonth>
      */
     @GetMapping(path = "/amount")
-    @ResponseStatus(HttpStatus.OK)
-    public List<ApiTotalGroupByMonth> getAmountByMonths(@RequestParam(value = "driverId", required = false) Long driverId) {
+    public ResponseEntity<List<ApiTotalGroupByMonth>> getAmountByMonths(@RequestParam(value = "driverId", required = false) Long driverId) {
         try {
-            return transformer.toRESTAmountMoney(reportService.getAmountByMonths(driverId));
+            List<ApiTotalGroupByMonth> result = transformer.toRESTAmountMoney(reportService.getAmountByMonths(driverId));
+
+            if (result.isEmpty())
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).contentType(MediaType.APPLICATION_JSON_UTF8).build();
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         } catch (DomainException e) {
             logger.error("Domain exception", e);
             throw new ApiException(e);
@@ -55,12 +60,15 @@ public class ReportController {
      * @return List<ApiReportByMonth>
      */
     @GetMapping(path = "/months/{monthsNumber}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<ApiReportByMonth> getReportByMonth(@RequestParam(value = "driverId", required = false) Long driverId,
-                                                  @RequestParam(value = "year", required = false) Integer year,
-                                                  @PathVariable int monthsNumber) {
+    public ResponseEntity<List<ApiReportByMonth>> getReportByMonth(@RequestParam(value = "driverId", required = false) Long driverId,
+                                                                   @RequestParam(value = "year", required = false) Integer year,
+                                                                   @PathVariable int monthsNumber) {
         try {
-            return transformer.toRESTByMonth(reportService.getReportByMonth(monthsNumber, driverId, year));
+            List<ApiReportByMonth> result = transformer.toRESTByMonth(reportService.getReportByMonth(monthsNumber, driverId, year));
+
+            if (result.isEmpty())
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).contentType(MediaType.APPLICATION_JSON_UTF8).build();
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         } catch (DomainException e) {
             logger.error("Domain exception", e);
             throw new ApiException(e);
@@ -76,9 +84,17 @@ public class ReportController {
      * @return
      */
     @GetMapping(path = "/consumption")
-    @ResponseStatus(HttpStatus.OK)
-    public List<ApiFuelConsumption> getFuelConsumption(@RequestParam(value = "driverId", required = false) Long driverId,
-                                                       @RequestParam(value = "year", required = false) Integer year) {
-        return transformer.toRESTFuelConsumption(reportService.getFuelConsumption(driverId, year));
+    public ResponseEntity<List<ApiFuelConsumption>> getFuelConsumption(@RequestParam(value = "driverId", required = false) Long driverId,
+                                                                       @RequestParam(value = "year", required = false) Integer year) {
+        try {
+            List<ApiFuelConsumption> result = transformer.toRESTFuelConsumption(reportService.getFuelConsumption(driverId, year));
+
+            if (result.isEmpty())
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).contentType(MediaType.APPLICATION_JSON_UTF8).build();
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
+        } catch (DomainException e) {
+            logger.error("Domain exception", e);
+            throw new ApiException(e);
+        }
     }
 }

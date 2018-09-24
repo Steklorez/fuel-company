@@ -47,6 +47,14 @@ public class ReportTest extends SpringTestContainer {
          * ]
          */
 
+        //test for expected empty data
+        this.mockMvc.perform(get("/reports/amount"))
+                .andExpect(status().isNoContent())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("[0].year").doesNotHaveJsonPath())
+                .andDo(print());
+
+
         double mayVolume1 = 5.0;
         double mayVolume2 = 10.0;
         double mayVolume3 = 20.5;
@@ -85,9 +93,6 @@ public class ReportTest extends SpringTestContainer {
 
 
 
-
-
-
         /*
          *GET http://localhost:8080/reports/months/6?driverId=2&year=2018
          *
@@ -110,7 +115,7 @@ public class ReportTest extends SpringTestContainer {
         //list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
         //get not exist month
         this.mockMvc.perform(get("/reports/months/1"))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").doesNotHaveJsonPath())
                 .andDo(print());
@@ -141,7 +146,7 @@ public class ReportTest extends SpringTestContainer {
         //list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
         //not exist month with real driverId
         this.mockMvc.perform(get("/reports/months/3?driverId=2"))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").doesNotHaveJsonPath());
 
@@ -218,7 +223,7 @@ public class ReportTest extends SpringTestContainer {
 
         //test for expected empty data
         this.mockMvc.perform(get("/reports/consumption?driverId=2&year=2018"))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").doesNotHaveJsonPath())
                 .andDo(print());
@@ -259,7 +264,7 @@ public class ReportTest extends SpringTestContainer {
 
         //test for not existing driverId
         this.mockMvc.perform(get("/reports/consumption?driverId=9999999"))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0]").doesNotExist())
                 .andExpect(jsonPath("[0]").doesNotHaveJsonPath());
@@ -274,7 +279,7 @@ public class ReportTest extends SpringTestContainer {
                 .andExpect(jsonPath("[0].fuelTypes[0].fuelType").value("D"))
                 .andExpect(jsonPath("[0].fuelTypes[0].volume").value(mayVolume2))
                 .andExpect(jsonPath("[0].fuelTypes[0].averagePrice").value(price2))
-                .andExpect(jsonPath("[0].fuelTypes[0].totalPrice").value( mayVolume2 * price2))
+                .andExpect(jsonPath("[0].fuelTypes[0].totalPrice").value(mayVolume2 * price2))
                 .andExpect(jsonPath("[0].fuelTypes[1]").doesNotExist())
 
                 .andExpect(jsonPath("[1].year").value(2017))
@@ -289,7 +294,7 @@ public class ReportTest extends SpringTestContainer {
 
         //test for not existing year
         this.mockMvc.perform(get("/reports/consumption?year=2018"))
-                .andExpect(status().isOk())
+                .andExpect(status().isNoContent())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0]").doesNotExist())
                 .andExpect(jsonPath("[0]").doesNotHaveJsonPath());
@@ -313,12 +318,12 @@ public class ReportTest extends SpringTestContainer {
                 .andExpect(jsonPath("[1].year").doesNotExist())
                 .andExpect(jsonPath("[1].year").doesNotHaveJsonPath())
 
-                 .andExpect(jsonPath("[0].month").value(9))
+                .andExpect(jsonPath("[0].month").value(9))
                 .andExpect(jsonPath("[0].fuelTypes").isArray())
                 .andExpect(jsonPath("[0].fuelTypes[0].fuelType").value("D"))
                 .andExpect(jsonPath("[0].fuelTypes[0].volume").value(mayVolume4))
                 .andExpect(jsonPath("[0].fuelTypes[0].averagePrice").value(price4))
-                .andExpect(jsonPath("[0].fuelTypes[0].totalPrice").value( mayVolume4 * price4))
+                .andExpect(jsonPath("[0].fuelTypes[0].totalPrice").value(mayVolume4 * price4))
                 .andExpect(jsonPath("[0].fuelTypes[1]").doesNotExist());
     }
 }

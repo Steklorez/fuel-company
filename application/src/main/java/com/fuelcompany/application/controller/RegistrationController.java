@@ -30,7 +30,8 @@ public class RegistrationController {
     private PurchaseTransformer transformer;
 
     /**
-     *  register one single record
+     * register one single record
+     *
      * @param request
      * @return
      */
@@ -48,6 +49,7 @@ public class RegistrationController {
 
     /**
      * register multiple records in one file
+     *
      * @param file
      */
     @Transactional
