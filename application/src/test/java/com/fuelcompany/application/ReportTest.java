@@ -61,10 +61,10 @@ public class ReportTest extends SpringTestContainer {
         double mayVolume4 = 40.5;
         int price1 = 20, price2 = 20;
         int price3 = 10, price4 = 10;
-        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume1), new BigDecimal(price1), 1L, LocalDate.of(2017, 5, 1)));
-        purchaseDAO.save(new PurchaseEntity("98", new BigDecimal(mayVolume2), new BigDecimal(price2), 1L, LocalDate.of(2017, 5, 20)));
-        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume3), new BigDecimal(price3), 2L, LocalDate.of(2017, 5, 3)));
-        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume4), new BigDecimal(price4), 2L, LocalDate.of(2017, 6, 20)));
+        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume1), BigDecimal.valueOf(price1), 1L, LocalDate.of(2017, 5, 1)));
+        purchaseDAO.save(new PurchaseEntity("98", BigDecimal.valueOf(mayVolume2), BigDecimal.valueOf(price2), 1L, LocalDate.of(2017, 5, 20)));
+        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume3), BigDecimal.valueOf(price3), 2L, LocalDate.of(2017, 5, 3)));
+        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume4), BigDecimal.valueOf(price4), 2L, LocalDate.of(2017, 6, 20)));
 
 
         //test for total spent amount of money grouped by month
@@ -174,8 +174,8 @@ public class ReportTest extends SpringTestContainer {
         double volume40_5 = 40.5;
         int price10 = 10;
         int price30 = 30;
-        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(volume40_5), new BigDecimal(price10), 3L, LocalDate.of(year2017, 8, 20)));
-        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(volume40_5), new BigDecimal(price30), 3L, LocalDate.of(year2018, 8, 20)));
+        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(volume40_5), BigDecimal.valueOf(price10), 3L, LocalDate.of(year2017, 8, 20)));
+        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(volume40_5), BigDecimal.valueOf(price30), 3L, LocalDate.of(year2018, 8, 20)));
         this.mockMvc.perform(get("/reports/months/8?driverId=3"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -235,9 +235,9 @@ public class ReportTest extends SpringTestContainer {
         double mayVolume4 = 40.5;
         int price1 = 20, price2 = 20;
         int price3 = 10, price4 = 10;
-        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume1), new BigDecimal(price1), 1L, LocalDate.of(2017, 5, 1)));
-        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume2), new BigDecimal(price2), 2L, LocalDate.of(2017, 5, 3)));
-        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume3), new BigDecimal(price3), 2L, LocalDate.of(2017, 6, 20)));
+        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume1), BigDecimal.valueOf(price1), 1L, LocalDate.of(2017, 5, 1)));
+        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume2), BigDecimal.valueOf(price2), 2L, LocalDate.of(2017, 5, 3)));
+        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume3), BigDecimal.valueOf(price3), 2L, LocalDate.of(2017, 6, 20)));
 
         //test for existing all inserted records
         this.mockMvc.perform(get("/reports/consumption"))
@@ -308,7 +308,7 @@ public class ReportTest extends SpringTestContainer {
                 .andExpect(jsonPath("[2].year").doesNotExist())
                 .andExpect(jsonPath("[2].year").doesNotHaveJsonPath());
 
-        purchaseDAO.save(new PurchaseEntity("D", new BigDecimal(mayVolume4), new BigDecimal(price4), 2L, LocalDate.of(2018, 9, 20)));
+        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume4), BigDecimal.valueOf(price4), 2L, LocalDate.of(2018, 9, 20)));
 
         //test for not existing year
         this.mockMvc.perform(get("/reports/consumption?year=2018"))

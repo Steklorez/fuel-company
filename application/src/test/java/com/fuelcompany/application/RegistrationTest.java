@@ -54,7 +54,7 @@ public class RegistrationTest extends SpringTestContainer {
          * }
          */
 
-        ApiPurchase purchase = new ApiPurchase("D", new BigDecimal(12.000), new BigDecimal("3.25"), 1L, LocalDate.of(2000, 10, 19));
+        ApiPurchase purchase = new ApiPurchase("D", BigDecimal.valueOf(12.000), BigDecimal.valueOf(3.25), 1L, LocalDate.of(2000, 10, 19));
         String body = (new ObjectMapper()).valueToTree(purchase).toString();
         this.mockMvc.perform(post("/purchases")
                 .content(body)
@@ -75,7 +75,7 @@ public class RegistrationTest extends SpringTestContainer {
     @Rollback
     @Transactional
     public void registrationErrors_1001_Test() throws Exception {
-        ApiPurchase purchase = new ApiPurchase("D", new BigDecimal(12.000), new BigDecimal("3.25"), 1L, null);
+        ApiPurchase purchase = new ApiPurchase("D", BigDecimal.valueOf(12.000), BigDecimal.valueOf(3.25), 1L, null);
         String body = (new ObjectMapper()).valueToTree(purchase).toString();
         this.mockMvc.perform(post("/purchases")
                 .content(body)
@@ -93,7 +93,7 @@ public class RegistrationTest extends SpringTestContainer {
     @Rollback
     @Transactional
     public void registrationErrors_1002_Test() throws Exception {
-        ApiPurchase purchase = new ApiPurchase(null, new BigDecimal(12.000), new BigDecimal("3.25"), 1L, LocalDate.of(2000, 10, 19));
+        ApiPurchase purchase = new ApiPurchase(null, BigDecimal.valueOf(12.000), BigDecimal.valueOf(3.25), 1L, LocalDate.of(2000, 10, 19));
         String body = (new ObjectMapper()).valueToTree(purchase).toString();
         this.mockMvc.perform(post("/purchases")
                 .content(body)
@@ -111,7 +111,7 @@ public class RegistrationTest extends SpringTestContainer {
     @Rollback
     @Transactional
     public void registrationErrors_1003_Test() throws Exception {
-        ApiPurchase purchase = new ApiPurchase("D", new BigDecimal(12.000), null, 1L, LocalDate.of(2000, 10, 19));
+        ApiPurchase purchase = new ApiPurchase("D", BigDecimal.valueOf(12.000), null, 1L, LocalDate.of(2000, 10, 19));
         String body = (new ObjectMapper()).valueToTree(purchase).toString();
         this.mockMvc.perform(post("/purchases")
                 .content(body)
@@ -129,7 +129,7 @@ public class RegistrationTest extends SpringTestContainer {
     @Rollback
     @Transactional
     public void registrationErrors_1004_Test() throws Exception {
-        ApiPurchase purchase = new ApiPurchase("D", new BigDecimal(12.000), new BigDecimal("3.25"), null, LocalDate.of(2000, 10, 19));
+        ApiPurchase purchase = new ApiPurchase("D", BigDecimal.valueOf(12.000), BigDecimal.valueOf(3.25), null, LocalDate.of(2000, 10, 19));
         String body = (new ObjectMapper()).valueToTree(purchase).toString();
         this.mockMvc.perform(post("/purchases")
                 .content(body)
@@ -147,7 +147,7 @@ public class RegistrationTest extends SpringTestContainer {
     @Rollback
     @Transactional
     public void registrationErrors_1005_Test() throws Exception {
-        ApiPurchase purchase = new ApiPurchase("Z", new BigDecimal(12.000), new BigDecimal("3.25"), 1L, LocalDate.of(2000, 10, 19));
+        ApiPurchase purchase = new ApiPurchase("Z", BigDecimal.valueOf(12.000), BigDecimal.valueOf(3.25), 1L, LocalDate.of(2000, 10, 19));
         String body = (new ObjectMapper()).valueToTree(purchase).toString();
         this.mockMvc.perform(post("/purchases")
                 .content(body)
@@ -165,7 +165,7 @@ public class RegistrationTest extends SpringTestContainer {
     @Rollback
     @Transactional
     public void registrationErrors_1006_Test() throws Exception {
-        ApiPurchase purchase = new ApiPurchase("D", null, new BigDecimal("3.25"), 1L, LocalDate.of(2000, 10, 19));
+        ApiPurchase purchase = new ApiPurchase("D", null, BigDecimal.valueOf(3.25), 1L, LocalDate.of(2000, 10, 19));
         String body = (new ObjectMapper()).valueToTree(purchase).toString();
         this.mockMvc.perform(post("/purchases")
                 .content(body)
