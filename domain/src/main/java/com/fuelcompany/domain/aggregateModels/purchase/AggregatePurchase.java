@@ -70,6 +70,8 @@ public class AggregatePurchase implements PurchaseService {
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1001);
         if (StringUtils.isEmpty(purchase.getFuelType()))
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1002);
+        if (StringUtils.isEmpty(purchase.getFuelType()))
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1010);
         if (purchase.getPrice() == null)
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1003);
         if (purchase.getDriverId() == null)
@@ -81,10 +83,10 @@ public class AggregatePurchase implements PurchaseService {
     }
 
     private PurchaseEntity buildEntity(Purchase item) {
-        return new PurchaseEntity(item.getFuelType(), item.getVolume(), item.getPrice(), item.getDriverId(), item.getDate());
+        return new PurchaseEntity(null, item.getVolume(), item.getPrice(), item.getDriverId(), item.getDate());
     }
 
     private Purchase buildDomainModel(PurchaseEntity entity) {
-        return new Purchase(entity.getId(), entity.getVolume(), entity.getFuelType(), entity.getPrice(), entity.getDriverId(), entity.getDate());
+        return new Purchase(entity.getId(), entity.getVolume(),null, entity.getPrice(), entity.getDriverId(), entity.getDate());
     }
 }

@@ -17,6 +17,8 @@ public enum ErrorMessages {
     DOMAIN_ERROR_1005(1005, "Wrong fuel type"),
     DOMAIN_ERROR_1006(1006, "Field 'volume' is empty"),
 
+    DOMAIN_ERROR_1010(1010, "Fuel type not exist"),
+
     DOMAIN_ERROR_E1050(1050, "Empty list of purchase"),
     DOMAIN_ERROR_E1051(1051, "Too many elements for save"),
 

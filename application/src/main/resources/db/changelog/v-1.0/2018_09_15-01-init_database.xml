@@ -8,7 +8,7 @@
     <changeSet id="2018_09_15-01-init_database-1" author="lyamin">
         <createTable tableName="PURCHASE">
             <column name="ID" type="BIGINT" autoIncrement="true"/>
-            <column name="FUEL_TYPE" type="VARCHAR(255)">
+            <column name="FUEL_TYPE" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
             <column name="VOLUME" type="DECIMAL(20, 3)">

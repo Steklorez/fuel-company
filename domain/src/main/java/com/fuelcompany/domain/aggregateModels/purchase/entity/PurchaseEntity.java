@@ -23,8 +23,9 @@ public class PurchaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "FUEL_TYPE", nullable = false, updatable = false)
-    private String fuelType;
+    @ManyToOne
+    @JoinColumn(name = "fuelType", referencedColumnName = "id")
+    private FuelTypeEntity fuelType;
 
     @Column(name = "VOLUME", nullable = false, updatable = false)
     private BigDecimal volume;
@@ -42,7 +43,7 @@ public class PurchaseEntity {
     @CreationTimestamp
     private LocalDateTime created;
 
-    public PurchaseEntity(String fuelType, BigDecimal volume, BigDecimal price, Long driverId, LocalDate date) {
+    public PurchaseEntity(FuelTypeEntity fuelType, BigDecimal volume, BigDecimal price, Long driverId, LocalDate date) {
         this.fuelType = fuelType;
         this.volume = volume;
         this.price = price;
