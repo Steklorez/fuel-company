@@ -67,6 +67,23 @@
             </dependencies>
         </profile>
         <profile>
+            <id>dev</id>
+            <properties>
+                <activatedProperties>dev</activatedProperties>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>p6spy</groupId>
+                    <artifactId>p6spy</artifactId>
+                    <version>3.7.0</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>postgres</id>
             <properties>
                 <activatedProperties>postgres</activatedProperties>

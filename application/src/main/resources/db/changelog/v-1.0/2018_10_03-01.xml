@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <changeSet author="rez" id="2018_10_03-01-create-index.PURCHASE.DRIVER_ID">
+        <validCheckSum>1:any</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="PURCHASE_DRIVER_ID_index" columnNames="DRIVER_ID" tableName="PURCHASE"/>
+            </not>
+        </preConditions>
+        <createIndex tableName="PURCHASE" indexName="PURCHASE_DRIVER_ID_index">
+            <column name="DRIVER_ID"/>
+        </createIndex>
+        <rollback>
+            <dropIndex tableName="PURCHASE" indexName="PURCHASE_DRIVER_ID_index"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -5,7 +5,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-    <changeSet id="15_09_2018-01-create_database-1" author="lyamin">
+    <changeSet id="2018_09_15-01-init_database-1" author="lyamin">
         <createTable tableName="PURCHASE">
             <column name="ID" type="BIGINT" autoIncrement="true"/>
             <column name="FUEL_TYPE" type="VARCHAR(255)">
@@ -29,7 +29,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="15_09_2018-01-create_database-2" author="lyamin">
+    <changeSet id="2018-09_15_09-create_database-2" author="lyamin">
         <addPrimaryKey tableName="PURCHASE" columnNames="ID"/>
     </changeSet>
 
