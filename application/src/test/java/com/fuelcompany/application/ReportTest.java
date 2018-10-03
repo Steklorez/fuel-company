@@ -1,21 +1,40 @@
 package com.fuelcompany.application;
 
+import com.fuelcompany.domain.aggregateModels.purchase.entity.FuelTypeEntity;
+import com.fuelcompany.domain.aggregateModels.purchase.entity.PurchaseEntity;
+import com.fuelcompany.domain.repository.FuelTypeRepository;
+import com.fuelcompany.domain.repository.PurchaseRepository;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 public class ReportTest extends SpringTestContainer {
 
- /*   @Autowired
-    private PurchaseRepository purchaseDAO;
+    @Autowired
+    private PurchaseRepository purchaseRepository;
+    @Autowired
+    private FuelTypeRepository fuelTypeRepository;
 
-    *//**
+    /**
      * 1) test for total spent amount of money grouped by month
      * 2) list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
      *
      * @throws Exception
-     *//*
+     */
     @Test
     @Transactional
     @Rollback
     public void getTotalByMonthAll() throws Exception {
-        *//*
+        /*
          * GET http://localhost:8080/reports/amount
          * Response structure:
          * [
@@ -30,7 +49,7 @@ public class ReportTest extends SpringTestContainer {
          *         "total": 52.5
          *     }
          * ]
-         *//*
+         */
 
         //test for expected empty data
         this.mockMvc.perform(get("/reports/amount"))
@@ -46,10 +65,12 @@ public class ReportTest extends SpringTestContainer {
         double mayVolume4 = 40.5;
         int price1 = 20, price2 = 20;
         int price3 = 10, price4 = 10;
-        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume1), BigDecimal.valueOf(price1), 1L, LocalDate.of(2017, 5, 1)));
-        purchaseDAO.save(new PurchaseEntity("98", BigDecimal.valueOf(mayVolume2), BigDecimal.valueOf(price2), 1L, LocalDate.of(2017, 5, 20)));
-        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume3), BigDecimal.valueOf(price3), 2L, LocalDate.of(2017, 5, 3)));
-        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume4), BigDecimal.valueOf(price4), 2L, LocalDate.of(2017, 6, 20)));
+        FuelTypeEntity d = fuelTypeRepository.findActiveByName("D").get();
+        FuelTypeEntity s = fuelTypeRepository.findActiveByName("98").get();
+        purchaseRepository.save(new PurchaseEntity(d, BigDecimal.valueOf(mayVolume1), BigDecimal.valueOf(price1), 1L, LocalDate.of(2017, 5, 1)));
+        purchaseRepository.save(new PurchaseEntity(s, BigDecimal.valueOf(mayVolume2), BigDecimal.valueOf(price2), 1L, LocalDate.of(2017, 5, 20)));
+        purchaseRepository.save(new PurchaseEntity(d, BigDecimal.valueOf(mayVolume3), BigDecimal.valueOf(price3), 2L, LocalDate.of(2017, 5, 3)));
+        purchaseRepository.save(new PurchaseEntity(d, BigDecimal.valueOf(mayVolume4), BigDecimal.valueOf(price4), 2L, LocalDate.of(2017, 6, 20)));
 
 
         //test for total spent amount of money grouped by month
@@ -78,7 +99,7 @@ public class ReportTest extends SpringTestContainer {
 
 
 
-        *//*
+        /*
          *GET http://localhost:8080/reports/months/6?driverId=2&year=2018
          *
          *[
@@ -96,7 +117,7 @@ public class ReportTest extends SpringTestContainer {
          *         ]
          *     }
          * ]
-         *//*
+         */
         //list fuel consumption records for specified month (each row should contain: fuel type, volume, date, price, total price, driver ID)
         //get not exist month
         this.mockMvc.perform(get("/reports/months/1"))
@@ -113,9 +134,9 @@ public class ReportTest extends SpringTestContainer {
                 .andExpect(jsonPath("[0].year").value(2017))
                 .andExpect(jsonPath("[0].records").isArray())
                 .andExpect(jsonPath("[1].records").doesNotExist())
-                .andExpect(jsonPath("[0].records[0].type").value("D"))
-                .andExpect(jsonPath("[0].records[1].type").value("98"))
-                .andExpect(jsonPath("[0].records[2].type").value("D"))
+                .andExpect(jsonPath("[0].records[0].type").value(d.getName()))
+                .andExpect(jsonPath("[0].records[1].type").value(s.getName()))
+                .andExpect(jsonPath("[0].records[2].type").value(d.getName()))
                 .andExpect(jsonPath("[0].records[0].volume").value(mayVolume1))
                 .andExpect(jsonPath("[0].records[1].volume").value(mayVolume2))
                 .andExpect(jsonPath("[0].records[2].volume").value(mayVolume3))
@@ -142,7 +163,7 @@ public class ReportTest extends SpringTestContainer {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("[0].year").value(2017))
                 .andExpect(jsonPath("[0].records").isArray())
-                .andExpect(jsonPath("[0].records[0].type").value("D"))
+                .andExpect(jsonPath("[0].records[0].type").value(d.getName()))
                 .andExpect(jsonPath("[0].records[0].volume").value(40.5))
                 .andExpect(jsonPath("[0].records[0].date").value("2017-06-20"))
                 .andExpect(jsonPath("[0].records[0].price").value(10.0))
@@ -159,8 +180,8 @@ public class ReportTest extends SpringTestContainer {
         double volume40_5 = 40.5;
         int price10 = 10;
         int price30 = 30;
-        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(volume40_5), BigDecimal.valueOf(price10), 3L, LocalDate.of(year2017, 8, 20)));
-        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(volume40_5), BigDecimal.valueOf(price30), 3L, LocalDate.of(year2018, 8, 20)));
+        purchaseRepository.save(new PurchaseEntity(d, BigDecimal.valueOf(volume40_5), BigDecimal.valueOf(price10), 3L, LocalDate.of(year2017, 8, 20)));
+        purchaseRepository.save(new PurchaseEntity(d, BigDecimal.valueOf(volume40_5), BigDecimal.valueOf(price30), 3L, LocalDate.of(year2018, 8, 20)));
         this.mockMvc.perform(get("/reports/months/8?driverId=3"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -178,17 +199,17 @@ public class ReportTest extends SpringTestContainer {
     }
 
 
-    *//**
+    /**
      * statistics for each month, list fuel consumption records grouped by fuel type (each row should contain:
      * fuel type, volume, average price, total price)
      *
      * @throws Exception
-     *//*
+     */
     @Test
     @Transactional
     @Rollback
     public void getFuelConsumption() throws Exception {
-        *//*
+        /*
          * GET http://localhost:8080/reports/consumption
          * [
          *     {
@@ -204,7 +225,7 @@ public class ReportTest extends SpringTestContainer {
          *         ]
          *     }
          *  ]
-         *//*
+         */
 
         //test for expected empty data
         this.mockMvc.perform(get("/reports/consumption?driverId=2&year=2018"))
@@ -220,9 +241,10 @@ public class ReportTest extends SpringTestContainer {
         double mayVolume4 = 40.5;
         int price1 = 20, price2 = 20;
         int price3 = 10, price4 = 10;
-        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume1), BigDecimal.valueOf(price1), 1L, LocalDate.of(2017, 5, 1)));
-        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume2), BigDecimal.valueOf(price2), 2L, LocalDate.of(2017, 5, 3)));
-        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume3), BigDecimal.valueOf(price3), 2L, LocalDate.of(2017, 6, 20)));
+        FuelTypeEntity d = fuelTypeRepository.findActiveByName("D").get();
+        purchaseRepository.save(new PurchaseEntity(d, BigDecimal.valueOf(mayVolume1), BigDecimal.valueOf(price1), 1L, LocalDate.of(2017, 5, 1)));
+        purchaseRepository.save(new PurchaseEntity(d, BigDecimal.valueOf(mayVolume2), BigDecimal.valueOf(price2), 2L, LocalDate.of(2017, 5, 3)));
+        purchaseRepository.save(new PurchaseEntity(d, BigDecimal.valueOf(mayVolume3), BigDecimal.valueOf(price3), 2L, LocalDate.of(2017, 6, 20)));
 
         //test for existing all inserted records
         this.mockMvc.perform(get("/reports/consumption"))
@@ -231,7 +253,7 @@ public class ReportTest extends SpringTestContainer {
                 .andExpect(jsonPath("[0].year").value(2017))
                 .andExpect(jsonPath("[0].month").value(5))
                 .andExpect(jsonPath("[0].fuelTypes").isArray())
-                .andExpect(jsonPath("[0].fuelTypes[0].fuelType").value("D"))
+                .andExpect(jsonPath("[0].fuelTypes[0].fuelType").value(d.getName()))
                 .andExpect(jsonPath("[0].fuelTypes[0].volume").value(mayVolume1 + mayVolume2))
                 .andExpect(jsonPath("[0].fuelTypes[0].averagePrice").value((price1 + price2) / 2))
                 .andExpect(jsonPath("[0].fuelTypes[0].totalPrice").value(mayVolume1 * price1 + mayVolume2 * price2))
@@ -240,7 +262,7 @@ public class ReportTest extends SpringTestContainer {
                 .andExpect(jsonPath("[1].year").value(2017))
                 .andExpect(jsonPath("[1].month").value(6))
                 .andExpect(jsonPath("[1].fuelTypes").isArray())
-                .andExpect(jsonPath("[1].fuelTypes[0].fuelType").value("D"))
+                .andExpect(jsonPath("[1].fuelTypes[0].fuelType").value(d.getName()))
                 .andExpect(jsonPath("[1].fuelTypes[0].volume").value(mayVolume3))
                 .andExpect(jsonPath("[1].fuelTypes[0].averagePrice").value((price3)))
                 .andExpect(jsonPath("[1].fuelTypes[0].totalPrice").value(mayVolume3 * price3))
@@ -261,7 +283,7 @@ public class ReportTest extends SpringTestContainer {
                 .andExpect(jsonPath("[0].year").value(2017))
                 .andExpect(jsonPath("[0].month").value(5))
                 .andExpect(jsonPath("[0].fuelTypes").isArray())
-                .andExpect(jsonPath("[0].fuelTypes[0].fuelType").value("D"))
+                .andExpect(jsonPath("[0].fuelTypes[0].fuelType").value(d.getName()))
                 .andExpect(jsonPath("[0].fuelTypes[0].volume").value(mayVolume2))
                 .andExpect(jsonPath("[0].fuelTypes[0].averagePrice").value(price2))
                 .andExpect(jsonPath("[0].fuelTypes[0].totalPrice").value(mayVolume2 * price2))
@@ -270,7 +292,7 @@ public class ReportTest extends SpringTestContainer {
                 .andExpect(jsonPath("[1].year").value(2017))
                 .andExpect(jsonPath("[1].month").value(6))
                 .andExpect(jsonPath("[1].fuelTypes").isArray())
-                .andExpect(jsonPath("[1].fuelTypes[0].fuelType").value("D"))
+                .andExpect(jsonPath("[1].fuelTypes[0].fuelType").value(d.getName()))
                 .andExpect(jsonPath("[1].fuelTypes[0].volume").value(mayVolume3))
                 .andExpect(jsonPath("[1].fuelTypes[0].averagePrice").value((price3)))
                 .andExpect(jsonPath("[1].fuelTypes[0].totalPrice").value(mayVolume3 * price3))
@@ -293,7 +315,7 @@ public class ReportTest extends SpringTestContainer {
                 .andExpect(jsonPath("[2].year").doesNotExist())
                 .andExpect(jsonPath("[2].year").doesNotHaveJsonPath());
 
-        purchaseDAO.save(new PurchaseEntity("D", BigDecimal.valueOf(mayVolume4), BigDecimal.valueOf(price4), 2L, LocalDate.of(2018, 9, 20)));
+        purchaseRepository.save(new PurchaseEntity(d, BigDecimal.valueOf(mayVolume4), BigDecimal.valueOf(price4), 2L, LocalDate.of(2018, 9, 20)));
 
         //test for not existing year
         this.mockMvc.perform(get("/reports/consumption?year=2018"))
@@ -305,10 +327,10 @@ public class ReportTest extends SpringTestContainer {
 
                 .andExpect(jsonPath("[0].month").value(9))
                 .andExpect(jsonPath("[0].fuelTypes").isArray())
-                .andExpect(jsonPath("[0].fuelTypes[0].fuelType").value("D"))
+                .andExpect(jsonPath("[0].fuelTypes[0].fuelType").value(d.getName()))
                 .andExpect(jsonPath("[0].fuelTypes[0].volume").value(mayVolume4))
                 .andExpect(jsonPath("[0].fuelTypes[0].averagePrice").value(price4))
                 .andExpect(jsonPath("[0].fuelTypes[0].totalPrice").value(mayVolume4 * price4))
                 .andExpect(jsonPath("[0].fuelTypes[1]").doesNotExist());
-    }*/
+    }
 }

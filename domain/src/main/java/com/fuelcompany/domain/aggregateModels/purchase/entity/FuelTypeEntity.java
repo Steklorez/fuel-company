@@ -31,4 +31,8 @@ public class FuelTypeEntity {
     @Column(name = "DISABLED")
     @CreationTimestamp
     private LocalDateTime disabled;
+
+    public FuelTypeEntity(String name) {
+        this.name = name;
+    }
 }

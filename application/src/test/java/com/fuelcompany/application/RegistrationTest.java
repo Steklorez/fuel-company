@@ -157,7 +157,7 @@ public class RegistrationTest extends SpringTestContainer {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("error.status").value(422))
                 .andExpect(jsonPath("error.errorCode").value(1005))
-                .andExpect(jsonPath("error.message").value("Wrong fuel type"))
+                .andExpect(jsonPath("error.message").value("Fuel type not exist"))
                 .andDo(print());
     }
 

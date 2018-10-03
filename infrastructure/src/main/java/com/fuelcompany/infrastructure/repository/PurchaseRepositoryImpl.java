@@ -46,7 +46,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     @Transactional(readOnly = true)
     public List<RecordByMonthEntity> getReportByMonth(int monthsNumber, Long driverId, Integer year) {
         String sql =
-                "SELECT p.FUEL_TYPE AS type," +
+                "SELECT type.NAME AS type," +
                         " p.VOLUME AS volume," +
                         " p.DATE AS purchaseDate," +
                         " p.PRICE AS price," +
@@ -55,6 +55,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
                         " EXTRACT(MONTH FROM p.DATE) AS month," +
                         " p.VOLUME * p.PRICE AS totalPrice" +
                         " FROM PURCHASE p" +
+                        " JOIN FUEL_TYPE type on p.FUEL_TYPE_ID = type.ID" +
                         " WHERE EXTRACT(MONTH FROM p.DATE) = " + monthsNumber +
                         (year != null ? " AND EXTRACT(YEAR FROM p.DATE) = " + year : "") +
                         (driverId != null ? " AND p.DRIVER_ID = " + driverId : "") +
@@ -66,13 +67,14 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     @Transactional(readOnly = true)
     public List<FuelConsumptionEntity> getFuelConsumption(Long driverId, Integer year) {
         String sql =
-                "SELECT p.FUEL_TYPE AS type," +
+                "SELECT type.NAME AS type," +
                         " SUM(p.VOLUME) AS volume," +
                         " AVG(p.PRICE) AS averagePrice," +
                         " SUM(p.VOLUME * p.PRICE) AS totalPrice," +
                         " EXTRACT(YEAR FROM p.DATE) AS year," +
                         " EXTRACT(MONTH FROM p.DATE) AS month" +
                         " FROM PURCHASE p" +
+                        " JOIN FUEL_TYPE type on p.FUEL_TYPE_ID = type.ID" +
                         getFuelConsumptionPredicates(driverId, year) +
                         " GROUP BY year, month, type" +
                         " ORDER BY year DESC, month ASC";
