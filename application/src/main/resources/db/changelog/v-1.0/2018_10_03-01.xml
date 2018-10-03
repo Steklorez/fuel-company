@@ -31,7 +31,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="NAME" type="VARCHAR(200)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="CREATED" type="TIMESTAMP">
                 <constraints nullable="false"/>
@@ -72,6 +72,10 @@
         <rollback>
             <dropForeignKeyConstraint constraintName="FUEL_TYPE_ID_FK" baseTableName="PURCHASE"/>
         </rollback>
+    </changeSet>
+
+    <changeSet author="rez" id="2018_10_03-02-test-data.sql">
+        <sqlFile path="2018_10_03-01-test-data.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
 </databaseChangeLog>

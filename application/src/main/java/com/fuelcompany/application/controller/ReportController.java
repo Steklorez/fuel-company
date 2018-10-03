@@ -1,7 +1,7 @@
 package com.fuelcompany.application.controller;
 
-import com.fuelcompany.domain.ReportService;
 import com.fuelcompany.domain.errors.DomainException;
+import com.fuelcompany.domain.service.ReportService;
 import com.fuelcompany.infrastructure.api.reporting.ApiFuelConsumption;
 import com.fuelcompany.infrastructure.api.reporting.ApiReportByMonth;
 import com.fuelcompany.infrastructure.api.reporting.ApiTotalGroupByMonth;

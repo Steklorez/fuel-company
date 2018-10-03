@@ -1,4 +1,4 @@
-package com.fuelcompany.domain;
+package com.fuelcompany.domain.repository;
 
 import com.fuelcompany.domain.aggregateModels.purchase.entity.PurchaseEntity;
 import com.fuelcompany.domain.aggregateModels.report.entity.FuelConsumptionEntity;
@@ -7,7 +7,7 @@ import com.fuelcompany.domain.aggregateModels.report.entity.TotalByMonthEntity;
 
 import java.util.List;
 
-public interface IPurchaseDAO {
+public interface PurchaseRepository{
 
     PurchaseEntity save(PurchaseEntity report);
 

@@ -1,4 +1,4 @@
-package com.fuelcompany.domain;
+package com.fuelcompany.domain.service;
 
 import com.fuelcompany.domain.aggregateModels.report.FuelConsumption;
 import com.fuelcompany.domain.aggregateModels.report.Month;

@@ -24,7 +24,7 @@ public class PurchaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "fuelType", referencedColumnName = "id")
+    @JoinColumn(name = "FUEL_TYPE_ID", referencedColumnName = "ID")
     private FuelTypeEntity fuelType;
 
     @Column(name = "VOLUME", nullable = false, updatable = false)

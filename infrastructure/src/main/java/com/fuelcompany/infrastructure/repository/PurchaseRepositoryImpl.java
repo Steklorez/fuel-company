@@ -1,11 +1,10 @@
-package com.fuelcompany.infrastructure;
+package com.fuelcompany.infrastructure.repository;
 
-import com.fuelcompany.domain.IPurchaseDAO;
 import com.fuelcompany.domain.aggregateModels.purchase.entity.PurchaseEntity;
 import com.fuelcompany.domain.aggregateModels.report.entity.FuelConsumptionEntity;
 import com.fuelcompany.domain.aggregateModels.report.entity.RecordByMonthEntity;
 import com.fuelcompany.domain.aggregateModels.report.entity.TotalByMonthEntity;
-import com.fuelcompany.infrastructure.repository.PurchaseRepository;
+import com.fuelcompany.domain.repository.PurchaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,18 +16,18 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Service
-public class PurchaseRepositoryImpl implements IPurchaseDAO {
+public class PurchaseRepositoryImpl implements PurchaseRepository {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private PurchaseRepository purchaseRepository;
+    private PurchaseSimpleRepository simpleRepository;
 
     @Override
     @Transactional
     public PurchaseEntity save(PurchaseEntity report) {
-        return purchaseRepository.save(report);
+        return simpleRepository.save(report);
     }
 
     @Override

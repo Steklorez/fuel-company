@@ -3,7 +3,7 @@ package com.fuelcompany.application;
 public class ReportTest extends SpringTestContainer {
 
  /*   @Autowired
-    private IPurchaseDAO purchaseDAO;
+    private PurchaseRepository purchaseDAO;
 
     *//**
      * 1) test for total spent amount of money grouped by month

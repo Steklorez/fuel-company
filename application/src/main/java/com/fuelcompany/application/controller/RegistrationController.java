@@ -1,7 +1,7 @@
 package com.fuelcompany.application.controller;
 
-import com.fuelcompany.domain.PurchaseService;
 import com.fuelcompany.domain.errors.DomainException;
+import com.fuelcompany.domain.service.PurchaseService;
 import com.fuelcompany.infrastructure.api.registration.ApiPurchase;
 import com.fuelcompany.infrastructure.api.registration.PurchaseTransformer;
 import com.fuelcompany.infrastructure.exception.ApiException;

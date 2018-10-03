@@ -1,10 +1,12 @@
 package com.fuelcompany.domain.aggregateModels.purchase;
 
-import com.fuelcompany.domain.IPurchaseDAO;
-import com.fuelcompany.domain.PurchaseService;
+import com.fuelcompany.domain.aggregateModels.purchase.entity.FuelTypeEntity;
 import com.fuelcompany.domain.aggregateModels.purchase.entity.PurchaseEntity;
 import com.fuelcompany.domain.errors.DomainException;
 import com.fuelcompany.domain.errors.ErrorMessages;
+import com.fuelcompany.domain.repository.FuelTypeRepository;
+import com.fuelcompany.domain.repository.PurchaseRepository;
+import com.fuelcompany.domain.service.PurchaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -24,13 +28,16 @@ public class AggregatePurchase implements PurchaseService {
     private static Logger logger = LoggerFactory.getLogger(AggregatePurchase.class);
 
     @Autowired
-    private IPurchaseDAO purchaseRepository;
+    private PurchaseRepository purchaseRepository;
+    @Autowired
+    private FuelTypeRepository fuelTypeRepository;
 
     @Override
     public Purchase save(Purchase purchase) throws DomainException {
         try {
-            validateFields(purchase);
-            Purchase result = buildDomainModel(purchaseRepository.save(buildEntity(purchase)));
+            validateEmptyFields(purchase);
+            FuelTypeEntity fuelType = validateExistRequestFuelTypes(purchase);
+            Purchase result = buildDomainModel(saveNewPurchase(fuelType, purchase));
             logger.info("1 purchase saved. Id=" + result.getId());
             return result;
         } catch (DomainException e) {
@@ -50,9 +57,12 @@ public class AggregatePurchase implements PurchaseService {
             if (purchaseList.size() > 5000)
                 throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1051);
 
-            purchaseList.forEach(this::validateFields);
+            purchaseList.forEach(this::validateEmptyFields);
+            Set<String> fuelTypeNameList = purchaseList.stream().map(Purchase::getFuelType).collect(Collectors.toSet());
+            Map<String, FuelTypeEntity> existNameMap = validateExistRequestFuelTypes(fuelTypeNameList);
+
             List<Purchase> collect = purchaseList.stream()
-                    .map(purchase -> buildDomainModel(purchaseRepository.save(buildEntity(purchase))))
+                    .map(purchase -> buildDomainModel(saveNewPurchase(existNameMap.get(purchase.getFuelType()), purchase)))
                     .collect(Collectors.toList());
             logger.info("Saved " + collect.size() + " records from file.");
             return collect;
@@ -65,28 +75,43 @@ public class AggregatePurchase implements PurchaseService {
         }
     }
 
-    private void validateFields(Purchase purchase) {
+    private PurchaseEntity saveNewPurchase(FuelTypeEntity fuelTypeEntity, Purchase purchase) {
+        return purchaseRepository.save(buildEntity(fuelTypeEntity, purchase));
+    }
+
+    private PurchaseEntity buildEntity(FuelTypeEntity fuelTypeEntity, Purchase item) {
+        return new PurchaseEntity(fuelTypeEntity, item.getVolume(), item.getPrice(), item.getDriverId(), item.getDate());
+    }
+
+    private void validateEmptyFields(Purchase purchase) {
         if (purchase.getDate() == null)
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1001);
-        if (StringUtils.isEmpty(purchase.getFuelType()))
-            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1002);
-        if (StringUtils.isEmpty(purchase.getFuelType()))
-            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1010);
         if (purchase.getPrice() == null)
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1003);
         if (purchase.getDriverId() == null)
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1004);
         if (purchase.getVolume() == null)
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1006);
-        if (!FuelTypeItem.fuelTypeSet.contains(purchase.getFuelType()))
-            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1005);
+        if (StringUtils.isEmpty(purchase.getFuelType()))
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1002);
     }
 
-    private PurchaseEntity buildEntity(Purchase item) {
-        return new PurchaseEntity(null, item.getVolume(), item.getPrice(), item.getDriverId(), item.getDate());
+    private FuelTypeEntity validateExistRequestFuelTypes(Purchase purchase) {
+        return fuelTypeRepository.findActiveByName(purchase.getFuelType())
+                .orElseThrow(() -> new DomainException(ErrorMessages.DOMAIN_ERROR_1005));
+    }
+
+    private Map<String, FuelTypeEntity> validateExistRequestFuelTypes(Set<String> requestNames) {
+        Map<String, FuelTypeEntity> existNameMap = fuelTypeRepository.findActiveByName(requestNames)
+                .stream()
+                .collect(Collectors.toMap(FuelTypeEntity::getName, fuelTypeEntity -> fuelTypeEntity));
+
+        boolean isAllMatched = requestNames.stream().allMatch(requestName -> existNameMap.containsKey(requestName));
+        if (isAllMatched) return existNameMap;
+        throw new DomainException(ErrorMessages.DOMAIN_ERROR_1005);
     }
 
     private Purchase buildDomainModel(PurchaseEntity entity) {
-        return new Purchase(entity.getId(), entity.getVolume(),null, entity.getPrice(), entity.getDriverId(), entity.getDate());
+        return new Purchase(entity.getId(), entity.getVolume(), entity.getFuelType().getName(), entity.getPrice(), entity.getDriverId(), entity.getDate());
     }
 }
