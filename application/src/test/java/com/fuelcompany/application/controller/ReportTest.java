@@ -1,10 +1,11 @@
-package com.fuelcompany.application;
+package com.fuelcompany.application.controller;
 
+import com.fuelcompany.application.SpringTestContainer;
 import com.fuelcompany.domain.aggregateModels.purchase.entity.FuelTypeEntity;
 import com.fuelcompany.domain.aggregateModels.purchase.entity.PurchaseEntity;
 import com.fuelcompany.domain.repository.FuelTypeRepository;
 import com.fuelcompany.domain.repository.PurchaseRepository;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;

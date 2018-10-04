@@ -1,33 +1,38 @@
 package com.fuelcompany.application;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.fuelcompany.domain.repository.FuelTypeRepositoryTest;
+import com.fuelcompany.inftastructure.ConnectionTest;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringJUnitConfig
+@SpringBootTest(classes = {ConnectionTest.class,
+        FuelTypeRepositoryTest.class})
 @ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ComponentScan(basePackages = {"com.fuelcompany.application","com.fuelcompany.domain" })
+@EntityScan(basePackages = "com.fuelcompany.domain")
+@EnableJpaRepositories(basePackages = {"com.fuelcompany.infrastructure"})
 public class SpringTestContainer {
 
     @Autowired
     private WebApplicationContext wac;
 
-    MockMvc mockMvc;
+    public MockMvc mockMvc;
 
-    @Before
+    @BeforeAll
     public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-    }
-
-    @Test
-    public void initTest() {
+        mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
 }

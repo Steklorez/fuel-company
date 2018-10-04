@@ -1,14 +1,16 @@
-package com.fuelcompany.application;
+package com.fuelcompany.inftastructure;
 
+import com.fuelcompany.application.SpringTestContainer;
 import org.h2.jdbc.JdbcSQLException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConnectionTest extends SpringTestContainer {
     private static Logger logger = LoggerFactory.getLogger(ConnectionTest.class);
@@ -26,17 +28,17 @@ public class ConnectionTest extends SpringTestContainer {
             ps = connection.prepareStatement("select * from PERSON");
         } catch (JdbcSQLException ignored) {
         }
-        Assert.assertNull(ps);
+        assertNull(ps);
 
         s.execute("CREATE TABLE PERSON (ID INT PRIMARY KEY, FIRSTNAME VARCHAR(64), LASTNAME VARCHAR(64))");
         ps = connection.prepareStatement("select * from PERSON");
         ResultSet r = ps.executeQuery();
-        Assert.assertFalse(r.next());
+        assertFalse(r.next());
 
         s.execute("INSERT INTO PERSON(ID,FIRSTNAME, LASTNAME) VALUES (1,'123132','123123')");
         ps = connection.prepareStatement("select * from PERSON");
         r = ps.executeQuery();
-        Assert.assertTrue(r.next());
+        assertTrue(r.next());
 
         r.close();
         ps.close();

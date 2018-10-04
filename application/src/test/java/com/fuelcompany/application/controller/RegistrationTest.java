@@ -1,10 +1,10 @@
-package com.fuelcompany.application;
+package com.fuelcompany.application.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fuelcompany.application.SpringTestContainer;
 import com.fuelcompany.infrastructure.api.registration.ApiPurchase;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.time.LocalDate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -198,7 +199,7 @@ public class RegistrationTest extends SpringTestContainer {
          *   }
          * ]
          */
-        Assert.assertEquals(0, ((Number) entityManager.createQuery("SELECT count(*) FROM PurchaseEntity p").getSingleResult()).intValue());
+        assertEquals(0, ((Number) entityManager.createQuery("SELECT count(*) FROM PurchaseEntity p").getSingleResult()).intValue());
         this.mockMvc.perform(MockMvcRequestBuilders.multipart("/purchases/file")
                 .file("file", Files.readAllBytes(new File("src/test/resources/multipart.json").toPath()))
                 .param("name", "multipart.json")
@@ -206,6 +207,6 @@ public class RegistrationTest extends SpringTestContainer {
         )
                 .andExpect(status().isCreated());
 
-        Assert.assertEquals(3, ((Number) entityManager.createQuery("SELECT count(*) FROM PurchaseEntity p").getSingleResult()).intValue());
+        assertEquals(3, ((Number) entityManager.createQuery("SELECT count(*) FROM PurchaseEntity p").getSingleResult()).intValue());
     }
 }
