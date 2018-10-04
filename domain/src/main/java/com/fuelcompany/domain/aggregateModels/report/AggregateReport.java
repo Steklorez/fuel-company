@@ -28,7 +28,7 @@ public class AggregateReport implements ReportService {
     @Override
     public List<TotalByMonthEntity> getAmountByMonths(Long driverId) throws DomainException {
         try {
-            List<TotalByMonthEntity> totalByMonth = purchaseRepository.getAmountByMonths(driverId);
+            final List<TotalByMonthEntity> totalByMonth = purchaseRepository.getAmountByMonths(driverId);
             for (TotalByMonthEntity item : totalByMonth) {
                 item.setMonth(getMonthName(item.getMonth()));
             }
@@ -46,8 +46,8 @@ public class AggregateReport implements ReportService {
     @Override
     public List<Month> getReportByMonth(int numberOfMonth, Long driverId, Integer year) throws DomainException {
         try {
-            List<RecordByMonthEntity> reportByMonth = purchaseRepository.getReportByMonth(numberOfMonth, driverId, year);
-            Map<Integer, List<RecordByMonthEntity>> yearsMap = reportByMonth.stream().collect(Collectors.groupingBy(RecordByMonthEntity::getYear));
+            final List<RecordByMonthEntity> reportByMonth = purchaseRepository.getReportByMonth(numberOfMonth, driverId, year);
+            final Map<Integer, List<RecordByMonthEntity>> yearsMap = reportByMonth.stream().collect(Collectors.groupingBy(RecordByMonthEntity::getYear));
             return yearsMap.keySet().stream()
                     .map(yearKey ->
                             new Month(yearKey, collectAllMonthsRecords(yearsMap.get(yearKey))))
@@ -69,8 +69,8 @@ public class AggregateReport implements ReportService {
     @Override
     public List<FuelConsumption> getFuelConsumption(Long driverId, Integer year) throws DomainException {
         try {
-            List<FuelConsumptionEntity> records = purchaseRepository.getFuelConsumption(driverId, year);
-            Map<String, List<FuelConsumptionEntity>> yearsMonth = records.stream().collect(Collectors.groupingBy(r -> r.getYear() + ":" + r.getMonth()));
+            final List<FuelConsumptionEntity> records = purchaseRepository.getFuelConsumption(driverId, year);
+            final Map<String, List<FuelConsumptionEntity>> yearsMonth = records.stream().collect(Collectors.groupingBy(r -> r.getYear() + ":" + r.getMonth()));
             List<FuelConsumption> result = new ArrayList<>();
 
             for (Map.Entry<String, List<FuelConsumptionEntity>> entry : yearsMonth.entrySet()) {

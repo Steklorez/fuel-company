@@ -10,6 +10,7 @@ import com.fuelcompany.domain.service.PurchaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -31,12 +32,14 @@ public class AggregatePurchase implements PurchaseService {
     private PurchaseRepository purchaseRepository;
     @Autowired
     private FuelTypeRepository fuelTypeRepository;
+    @Value("${application.registration.purchase.file.maxRecordsCount:10000}")
+    private Long maxRecordsInFile;
 
     @Override
     public Purchase save(Purchase purchase) throws DomainException {
         try {
             validateEmptyFields(purchase);
-            FuelTypeEntity fuelType = validateExistRequestFuelTypes(purchase);
+            FuelTypeEntity fuelType = validateToExistFuelTypesFromRequest(purchase);
             Purchase result = buildDomainModel(saveNewPurchase(fuelType, purchase));
             logger.info("1 purchase saved. Id=" + result.getId());
             return result;
@@ -53,13 +56,12 @@ public class AggregatePurchase implements PurchaseService {
         try {
             if (purchaseList.isEmpty())
                 throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1050);
-
-            if (purchaseList.size() > 5000)
+            if (purchaseList.size() > maxRecordsInFile)
                 throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1051);
 
             purchaseList.forEach(this::validateEmptyFields);
             Set<String> fuelTypeNameList = purchaseList.stream().map(Purchase::getFuelType).collect(Collectors.toSet());
-            Map<String, FuelTypeEntity> existNameMap = validateExistRequestFuelTypes(fuelTypeNameList);
+            Map<String, FuelTypeEntity> existNameMap = validateToExistFuelTypesFromRequest(fuelTypeNameList);
 
             List<Purchase> collect = purchaseList.stream()
                     .map(purchase -> buildDomainModel(saveNewPurchase(existNameMap.get(purchase.getFuelType()), purchase)))
@@ -96,12 +98,12 @@ public class AggregatePurchase implements PurchaseService {
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1002);
     }
 
-    private FuelTypeEntity validateExistRequestFuelTypes(Purchase purchase) {
+    private FuelTypeEntity validateToExistFuelTypesFromRequest(Purchase purchase) {
         return fuelTypeRepository.findActiveByName(purchase.getFuelType())
                 .orElseThrow(() -> new DomainException(ErrorMessages.DOMAIN_ERROR_1005));
     }
 
-    private Map<String, FuelTypeEntity> validateExistRequestFuelTypes(Set<String> requestNames) {
+    private Map<String, FuelTypeEntity> validateToExistFuelTypesFromRequest(Set<String> requestNames) {
         Map<String, FuelTypeEntity> existNameMap = fuelTypeRepository.findActiveByName(requestNames)
                 .stream()
                 .collect(Collectors.toMap(FuelTypeEntity::getName, fuelTypeEntity -> fuelTypeEntity));

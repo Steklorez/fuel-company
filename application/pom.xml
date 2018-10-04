@@ -37,6 +37,12 @@
             <version>1.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>p6spy</groupId>
+            <artifactId>p6spy</artifactId>
+            <version>3.7.0</version>
+            <scope>test</scope>
+        </dependency>
 
         <!--not provided any longer by default in Java 9-->
         <dependency>
@@ -62,9 +68,9 @@
             </dependencies>
         </profile>
         <profile>
-            <id>dev</id>
+            <id>h2-dev</id>
             <properties>
-                <activatedProperties>dev</activatedProperties>
+                <activatedProperties>h2-dev</activatedProperties>
             </properties>
             <dependencies>
                 <dependency>
