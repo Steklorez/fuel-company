@@ -1,6 +1,5 @@
 package com.fuelcompany.inftastructure;
 
-import com.fuelcompany.application.SpringTestContainer;
 import org.h2.jdbc.JdbcSQLException;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -12,7 +11,7 @@ import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ConnectionTest extends SpringTestContainer {
+public class ConnectionTest {
     private static Logger logger = LoggerFactory.getLogger(ConnectionTest.class);
 
     @Test

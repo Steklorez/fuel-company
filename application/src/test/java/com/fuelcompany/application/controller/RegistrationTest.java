@@ -2,7 +2,7 @@ package com.fuelcompany.application.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fuelcompany.application.SpringTestContainer;
+import com.fuelcompany.application.SpringTestCase;
 import com.fuelcompany.infrastructure.api.registration.ApiPurchase;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-public class RegistrationTest extends SpringTestContainer {
+public class RegistrationTest extends SpringTestCase {
 
     @PersistenceContext
     private EntityManager entityManager;

@@ -1,15 +1,17 @@
 package com.fuelcompany.domain.repository;
 
-import com.fuelcompany.application.SpringTestContainer;
+import com.fuelcompany.application.SpringTestCase;
 import com.fuelcompany.domain.aggregateModels.purchase.entity.FuelTypeEntity;
 import org.junit.jupiter.api.Test;
+import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FuelTypeRepositoryTest extends SpringTestContainer {
+public class FuelTypeRepositoryTest extends SpringTestCase {
 
     @Autowired
     private FuelTypeRepository fuelTypeRepository;
@@ -28,6 +30,14 @@ public class FuelTypeRepositoryTest extends SpringTestContainer {
 
     @Test
     public void findActiveByNameList() {
-//        fuelTypeRepository.findActiveByName()
+        List<FuelTypeEntity> activeByName = fuelTypeRepository.findActiveByName(new HashSet<>());
+        assertTrue(activeByName.isEmpty());
+        activeByName = fuelTypeRepository.findActiveByName(Collections.singleton("qweretertrty"));
+        assertTrue(activeByName.isEmpty());
+        Set<String> fuelTypeNameSet = Sets.newSet("D", "98");
+        activeByName = fuelTypeRepository.findActiveByName(fuelTypeNameSet);
+        assertEquals(2, activeByName.size());
+        boolean isAllFinded = activeByName.stream().map(FuelTypeEntity::getName).collect(Collectors.toSet()).containsAll(fuelTypeNameSet);
+        assertTrue(isAllFinded);
     }
 }

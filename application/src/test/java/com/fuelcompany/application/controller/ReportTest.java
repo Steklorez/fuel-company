@@ -1,6 +1,6 @@
 package com.fuelcompany.application.controller;
 
-import com.fuelcompany.application.SpringTestContainer;
+import com.fuelcompany.application.SpringTestCase;
 import com.fuelcompany.domain.aggregateModels.purchase.entity.FuelTypeEntity;
 import com.fuelcompany.domain.aggregateModels.purchase.entity.PurchaseEntity;
 import com.fuelcompany.domain.repository.FuelTypeRepository;
@@ -18,7 +18,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class ReportTest extends SpringTestContainer {
+
+public class ReportTest extends SpringTestCase {
 
     @Autowired
     private PurchaseRepository purchaseRepository;
