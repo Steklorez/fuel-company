@@ -1,12 +1,18 @@
-package com.fuelcompany.application.controller;
+package com.fuelcompany.application.web;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fuelcompany.application.SpringTestCase;
 import com.fuelcompany.infrastructure.api.registration.ApiPurchase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +29,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
-public class RegistrationTest extends SpringTestCase {
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@ActiveProfiles("test")
+public class RegistrationTest{
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
     @Transactional

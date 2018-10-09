@@ -1,4 +1,4 @@
-package com.fuelcompany.inftastructure;
+package com.fuelcompany.application;
 
 import org.h2.jdbc.JdbcSQLException;
 import org.junit.jupiter.api.Test;

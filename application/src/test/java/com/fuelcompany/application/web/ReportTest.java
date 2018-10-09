@@ -1,14 +1,18 @@
-package com.fuelcompany.application.controller;
+package com.fuelcompany.application.web;
 
-import com.fuelcompany.application.SpringTestCase;
 import com.fuelcompany.domain.aggregateModels.purchase.entity.FuelTypeEntity;
 import com.fuelcompany.domain.aggregateModels.purchase.entity.PurchaseEntity;
 import com.fuelcompany.domain.repository.FuelTypeRepository;
 import com.fuelcompany.domain.repository.PurchaseRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -18,13 +22,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
-public class ReportTest extends SpringTestCase {
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@ActiveProfiles("test")
+public class ReportTest {
 
     @Autowired
     private PurchaseRepository purchaseRepository;
     @Autowired
     private FuelTypeRepository fuelTypeRepository;
+    @Autowired
+    private MockMvc mockMvc;
 
     /**
      * 1) test for total spent amount of money grouped by month
