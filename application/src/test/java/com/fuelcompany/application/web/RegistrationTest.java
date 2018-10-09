@@ -2,7 +2,6 @@ package com.fuelcompany.application.web;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fuelcompany.application.SpringTestCase;
 import com.fuelcompany.infrastructure.api.registration.ApiPurchase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
