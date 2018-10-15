@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +40,7 @@ public class AggregatePurchase implements PurchaseService {
     public Purchase save(Purchase purchase) throws DomainException {
         try {
             validateEmptyFields(purchase);
+            validateNotPositiveFields(purchase);
             FuelTypeEntity fuelType = validateToExistFuelTypesFromRequest(purchase);
             Purchase result = buildDomainModel(saveNewPurchase(fuelType, purchase));
             logger.info("1 purchase saved. Id=" + result.getId());
@@ -59,7 +61,11 @@ public class AggregatePurchase implements PurchaseService {
             if (purchaseList.size() > maxRecordsInFile)
                 throw new DomainException(ErrorMessages.DOMAIN_ERROR_E1051);
 
-            purchaseList.forEach(this::validateEmptyFields);
+            purchaseList.forEach(purchase -> {
+                validateEmptyFields(purchase);
+                validateNotPositiveFields(purchase);
+            });
+
             Set<String> fuelTypeNameList = purchaseList.stream().map(Purchase::getFuelType).collect(Collectors.toSet());
             Map<String, FuelTypeEntity> existNameMap = validateToExistFuelTypesFromRequest(fuelTypeNameList);
 
@@ -96,6 +102,15 @@ public class AggregatePurchase implements PurchaseService {
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1006);
         if (StringUtils.isEmpty(purchase.getFuelType()))
             throw new DomainException(ErrorMessages.DOMAIN_ERROR_1002);
+    }
+
+    private void validateNotPositiveFields(Purchase purchase) {
+        if (purchase.getVolume().compareTo(BigDecimal.ZERO) <= 0)
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1007);
+        if (purchase.getPrice().compareTo(BigDecimal.ZERO) <= 0)
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1008);
+        if (purchase.getDriverId() < 0)
+            throw new DomainException(ErrorMessages.DOMAIN_ERROR_1009);
     }
 
     private FuelTypeEntity validateToExistFuelTypesFromRequest(Purchase purchase) {

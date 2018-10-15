@@ -16,6 +16,9 @@ public enum ErrorMessages {
     DOMAIN_ERROR_1004(1004, "Field 'driverId' is empty"),
     DOMAIN_ERROR_1005(1005, "Fuel type not exist"),
     DOMAIN_ERROR_1006(1006, "Field 'volume' is empty"),
+    DOMAIN_ERROR_1007(1007, "Field 'volume' need to be a positive"),
+    DOMAIN_ERROR_1008(1008, "Field 'price' need to be a positive"),
+    DOMAIN_ERROR_1009(1009, "Field 'driverId' need to be a positive"),
 
     DOMAIN_ERROR_E1050(1050, "Empty list of purchase"),
     DOMAIN_ERROR_E1051(1051, "Too many elements for save"),
